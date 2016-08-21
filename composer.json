@@ -1,0 +1,44 @@
+{
+    "name": "pehape/data-tree",
+    "type": "library",
+    "description": "DataTree: Tree data-structure component for Nette Framework",
+    "keywords": ["datatree", "tree", "datastructure", "structure", "jstree", "nette"],
+    "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+    "authors": [
+        {
+            "name": "Tomas Rathouz",
+            "email": "trathouz@gmail.com",
+            "homepage": "http://pehape.cz"
+        }
+    ],
+    "support": {
+        "email": "trathouz@gmail.com",
+        "issues": "https://github.com/pehape/data-tree/issues/"
+    },
+    "require": {
+        "php": ">=5.4.0",
+        "nette/application": "~2.3",
+        "nette/database": "~2.3",
+        "nette/utils": "~2.3"
+    },
+    "require-dev": {
+        "arachne/codeception": "^0.7.3",
+        "tracy/tracy": "~2.3",
+        "nette/robot-loader": "~2.3",
+        "squizlabs/php_codesniffer": "^2.6",
+        "pehape/tools": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pehape\\DataTree\\": "src"
+        },
+        "classmap": [
+            "src/Exceptions/exceptions.php"
+        ]
+    },
+    "scripts": {
+        "test": "vendor\\bin\\codecept run --env local",
+        "syntax": "vendor\\bin\\phpcs --standard=vendor/pehape/tools/assets/coding-standards/standards.xml --colors --encoding=utf-8 -sp src/",
+        "syntax-fix": "vendor\\bin\\phpcbf --standard=vendor/pehape/tools/assets/coding-standards/standards.xml src/"
+    }
+}

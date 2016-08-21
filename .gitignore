@@ -1,0 +1,8 @@
+/composer.lock
+/nbproject/
+/vendor/
+
+/tests/_output/*
+/tests/_support/_generated/*
+/tests/_envs/local.yml
+/tests/_nette/_config/config.neon

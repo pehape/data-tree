@@ -1,0 +1,8 @@
+
+{ifset $options->title}
+    <{$options->titleElementType} id="{$options->elementId}-title">
+        {_$options->title}
+    </{$options->titleElementType}>
+{/ifset}
+
+<{$options->elementType} id="{$options->elementId}"></{$options->elementType}>

@@ -1,0 +1,10 @@
+# Sample configuration file.
+# DO NOT CHANGE THIS FILE!
+
+modules:
+    enabled:
+        - Db:
+            dsn: 'mysql:host=localhost;port=3306;dbname=datatree'
+            user: 'root'
+            password: ''
+            dump: tests/_data/dump.sql

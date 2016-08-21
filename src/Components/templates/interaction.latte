@@ -1,0 +1,163 @@
+
+{if $options['interaction']['include'] === TRUE}
+    <script type="text/javascript" charset="utf-8" src="{$basePath}{$options['interaction']['includePath']}/jquery-3.1.0.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{$basePath}{$options['interaction']['includePath']}/jstree-3.3.1.min.js"></script>
+{/if}
+
+{if $options['interaction']['applyWrap'] === TRUE}
+<script type="text/javascript">
+{/if}
+
+    {if $options['interaction']['applyReady'] === TRUE}
+        $(document).ready( function() {
+    {/if}
+
+    var datatree = datatree || {};
+
+    datatree.prefixParameters = function (parameters, prefix, joinPrefix) {
+        var prefixedParameters = {};
+        var buildJoinPrefix = joinPrefix + '_';
+        if (typeof joinPrefix == 'undefined') {
+            buildJoinPrefix = '';
+        }
+        $.each(parameters, function(key, value) {
+            prefixedParameters[prefix + '-' + buildJoinPrefix + key] = value;
+        });
+        return prefixedParameters;
+    };
+
+    datatree.fireCallback = function(url, parameters) {
+        var parameters = datatree.prefixParameters(parameters, {$controlName});
+        
+        {if isset($options['joinTree'])}
+        var joinedTreeParameters = this.getJoinedTreeParameters({$options['joinTree']});
+        var prefixedJoinedTreeParameters = this.prefixParameters(joinedTreeParameters, {$controlName}, {$options['joinTree']});
+        $.each(prefixedJoinedTreeParameters, function (key, value) {
+            parameters[key] = value;
+        })
+        {/if}
+        
+        var callback = $.post(url, parameters);
+        callback.always(function (response) {
+            if (typeof response.snippets == 'object') {
+                $.nette.ext('snippets').updateSnippets(response.snippets);
+                $.nette.load();
+            }
+        });
+        return callback;
+    };
+    
+    datatree.getJoinedTreeParameters = function(joinedTreeId) {
+        var parameters = {};
+        parameters.selectedNodes = $('#' + joinedTreeId).jstree(true).get_selected();
+        return parameters;
+    };
+
+    $('#{!$options->elementId}')
+        .jstree({
+            core: {
+                animation: 0,
+                check_callback: true,
+                {ifset $options['theme']}
+                themes: {
+                    name: {$options['theme']['name']},
+                },
+                {/ifset}
+                data: {
+                    url : {link callback!, onLoadData}
+                }
+            },
+            {ifset $options['types']}
+            types: {
+                {foreach $options['types'] as $typeKey => $typeDefinition}
+                    {$typeKey}: {
+                        {foreach $typeDefinition as $definitionKey => $definitionValue}
+                            {$definitionKey}: {$definitionValue},
+                        {/foreach}
+                    },
+                {/foreach}
+            },
+            {/ifset}
+            plugins: [{foreach $plugins as $plugin}{$plugin},{/foreach}]
+        })
+        .on('create_node.jstree', function (e, data) {
+            var tree = data.instance;
+            var callback = datatree.fireCallback(
+                {link callback!, onCreateNode},
+                {'id': data.node.parent, 'text': data.node.text, 'type': data.node.type});
+
+            callback.done(function (response) {
+                tree.set_id(data.node, response.id);
+            });
+            callback.fail(function () {
+                tree.refresh(data.node);
+            });
+
+        })
+        .on('rename_node.jstree', function (e, data) {
+            var tree = data.instance;
+            var callback = datatree.fireCallback(
+                {link callback!, onRenameNode},
+                {'id': data.node.id, 'text': data.node.text});
+
+            callback.done(function (response) {
+                tree.refresh(data.node);
+            });
+            callback.fail(function () {
+                tree.refresh(data.node);
+            });
+
+        })
+        .on('move_node.jstree', function (e, data) {
+            var tree = data.instance;
+            var callback = datatree.fireCallback(
+                {link callback!, onMoveNode},
+                {'id': data.node.id, 'parent': data.parent});
+
+            callback.done(function (response) {
+                tree.refresh(data.node);
+            });
+            callback.fail(function () {
+                tree.refresh(data.node);
+            });
+
+        })
+        .on('select_node.jstree', function (e, data) {
+            var tree = data.instance;
+            var callback = datatree.fireCallback(
+                {link callback!, onSelectNode},
+                {'id': data.node.id});
+            
+            callback.fail(function () {
+                tree.refresh(data.node);
+            });
+                    
+        })
+        .on('delete_node.jstree', function (e, data) {
+            var tree = data.instance;
+            var callback = datatree.fireCallback(
+                {link callback!, onDeleteNode},
+                {'id': data.node.id, 'nodes': data.node.children_d});
+
+            callback.done(function (response) {
+                tree.refresh(data.node);
+            });
+            callback.fail(function () {
+                tree.refresh(data.node);
+            });
+            
+        })
+        .on('loaded.jstree', function (e, data) {
+            var tree = data.instance;
+            {if $options['defaultState'] === \Pehape\DataTree\Components\DataTree::STATE_OPEN}
+                tree.open_all();
+            {/if}
+        });
+    
+    {if $options['interaction']['applyReady'] === TRUE}
+        });
+    {/if}
+    
+{if $options['interaction']['applyWrap'] === TRUE}
+</script>
+{/if}

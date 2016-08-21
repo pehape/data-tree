@@ -1,0 +1,9 @@
+# Sample configuration file.
+# DO NOT CHANGE THIS FILE!
+
+database:
+    dsn: 'mysql:host=localhost;port=3306;dbname=datatree'
+    user: 'root'
+    password: ''
+    options:
+        lazy: yes
