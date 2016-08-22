@@ -237,12 +237,17 @@ class DataTree extends UI\Control
      * @param array $data
      * @param int $type
      */
-    private function sendResponse(array $data, $type)
+    private function sendResponse(array $data, $type = NULL)
     {
-        $responseData = [
-            'type' => $type,
-            'data' => $data,
-        ];
+        if ($type !== NULL) {
+            $responseData = [
+                'type' => $type,
+                'data' => $data,
+            ];
+        } else {
+            $responseData = $data;
+        }
+
         $jsonResponse = new Responses\JsonResponse($responseData);
         $this->presenter->sendResponse($jsonResponse);
     }
@@ -458,7 +463,9 @@ class DataTree extends UI\Control
      */
     public function onLoadNodesCallback(DataTree $tree)
     {
-        $tree->sendSuccessResponse($this->dataSource->getNodes());
+        $nodes = $this->dataSource->getNodes();
+        $mappedData = $this->dataMapper->applyMapping($nodes);
+        $tree->sendResponse($mappedData);
     }
 
 
