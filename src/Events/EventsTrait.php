@@ -16,7 +16,7 @@ trait EventsTrait
 {
 
     /** @var callable[] function (DataTree $tree); Occurs when the data for tree are loaded */
-    public $onLoadData;
+    public $onLoadNodes;
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a new node is created */
     public $onCreateNode;
