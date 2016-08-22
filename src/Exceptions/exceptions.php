@@ -8,6 +8,9 @@
 namespace Pehape\DataTree\Exceptions;
 
 // @codingStandardsIgnoreStart
+
+class DatabaseSourceException extends \RuntimeException {}
+
 class UnknownSourceTableException extends \RuntimeException
 {
 

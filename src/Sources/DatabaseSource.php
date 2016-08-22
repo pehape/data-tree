@@ -46,22 +46,180 @@ class DatabaseSource implements IDataSource
     /**
      * Constructor.
      * @param Context $db
+     * @throws Exceptions\UnknownSourceTableException
      */
-    public function __construct(Context $db)
+    public function __construct(Context $db, $baseTableName = NULL, $closureTableName = NULL)
     {
         $this->db = $db;
         $this->dbTables = $this->getStructure();
+
+        if ($baseTableName !== NULL) {
+            $this->setBaseTableName($baseTableName);
+        }
+
+        if ($closureTableName !== NULL) {
+            $this->setClosureTableName($closureTableName);
+        }
     }
 
 
     /**
-     * Get nodes for the DataTree.
+     * Get node.
+     * @param int $id
+     * @return Table\IRow
+     * @throws Exceptions\DatabaseSourceException
+     */
+    public function getNode($id)
+    {
+        $node = $this->getBaseTable()->get($id);
+        if ($node === FALSE) {
+            throw new Exceptions\DatabaseSourceException('Node could not be found.');
+        }
+
+        return $node;
+    }
+
+
+    /**
+     * Get nodes.
      * @param array $conditions
      * @return array
      */
     public function getNodes(array $conditions = [])
     {
         return $this->getTree($conditions);
+    }
+
+
+    /**
+     * Create new node.
+     * @param int $parentId
+     * @param array $data
+     * @return int
+     * @throws Exceptions\DatabaseSourceException
+     */
+    public function createNode($parentId, array $data)
+    {
+        $this->db->beginTransaction();
+        try {
+            $operation = $this->getBaseTable()->insert($data);
+            if ($operation === FALSE) {
+                throw new Exceptions\DatabaseSourceException('Node could not be created.');
+            }
+
+            $baseRelInsert = $this->getClosureTable()->insert([
+                'ancestor' => $operation->id,
+                'descendant' => $operation->id,
+                'depth' => 0,
+            ]);
+            $parentRels = $this->getClosureTable()
+                ->select('ancestor, ' . $operation->id . ' AS descendant, depth+1 AS depth')
+                ->where('descendant', $parentId)
+                ->fetchAll();
+            $parentRelsInsert = $this->getClosureTable()->insert($parentRels);
+            if ($baseRelInsert === FALSE || $parentRelsInsert === FALSE) {
+                throw new Exceptions\DatabaseSourceException('Tree could not be updated');
+            }
+
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw new Exceptions\DatabaseSourceException($e->getMessage());
+        }
+
+        return $operation->id;
+    }
+
+
+    /**
+     * Update node.
+     * @param int $id
+     * @param array $data
+     * @throws Exceptions\DatabaseSourceException
+     */
+    public function updateNode($id, array $data)
+    {
+        try {
+            $updateResult = $this->getBaseTable()->get($id)->update($data);
+            if ($updateResult === FALSE) {
+                throw new Exceptions\DatabaseSourceException('Node could not be updated.');
+            }
+        } catch (\Exception $e) {
+            throw new Exceptions\DatabaseSourceException($e->getMessage());
+        }
+    }
+
+
+    /**
+     * Move node.
+     * @param int $id
+     * @param int $parentId
+     * @throws Exceptions\DatabaseSourceException
+     */
+    public function moveNode($id, $parentId)
+    {
+        $this->db->beginTransaction();
+        try {
+            $this->db->query('DELETE cc_a FROM ' . $this->getClosureTableName() . ' cc_a
+                JOIN ' . $this->getClosureTableName() . ' cc_d USING(descendant)
+                LEFT JOIN ' . $this->getClosureTableName() . ' cc_x
+                ON cc_x.ancestor = cc_d.ancestor AND cc_x.descendant = cc_a.ancestor
+                WHERE cc_d.ancestor = ? AND cc_x.ancestor IS NULL', $id);
+            $this->db->query('INSERT INTO ' . $this->getClosureTableName() . ' (ancestor, descendant, depth)
+                SELECT supertree.ancestor, subtree.descendant, supertree.depth+subtree.depth+1
+                FROM ' . $this->getClosureTableName() . ' AS supertree JOIN ' . $this->getClosureTableName() . ' AS subtree
+                WHERE subtree.ancestor = ?
+                AND supertree.descendant = ?', $id, $parentId);
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw new Exceptions\DatabaseSourceException($e->getMessage());
+        }
+    }
+
+
+    /**
+     * Remove node.
+     * @param int $id
+     * @throws Exceptions\DatabaseSourceException
+     */
+    public function removeNode($id)
+    {
+        $children = $this->getChildrenFrom($id);
+        array_walk($children, function (& $item) {
+            $item = $item->id;
+        });
+        try {
+            $this->getBaseTable()->where('id', $children)->delete();
+        } catch (\Exception $e) {
+            throw new Exceptions\DatabaseSourceException($e->getMessage());
+        }
+    }
+
+
+    /**
+     * Get children of node.
+     * @param int $id
+     * @param bool $self
+     * @return array
+     */
+    public function getChildrenFrom($id, $self = TRUE)
+    {
+        if ($self === TRUE) {
+            $data = $this->db->query('SELECT c.*, cc2.ancestor, cc.descendant, cc.depth
+                FROM ' . $this->getBaseTableName() . ' c
+                JOIN ' . $this->getClosureTableName() . ' cc ON (c.id = cc.descendant)
+                LEFT JOIN ' . $this->getClosureTableName() . ' cc2 ON (cc2.descendant = cc.descendant AND cc2.depth = 1)
+                WHERE cc.ancestor = ?', $id)->fetchAll();
+        } else {
+            $data = $this->db->query('SELECT c.*, cc2.ancestor, cc.descendant, cc.depth
+                FROM ' . $this->getBaseTableName() . ' c
+                JOIN ' . $this->getClosureTableName() . ' cc ON (c.id = cc.descendant)
+                LEFT JOIN ' . $this->getClosureTableName() . ' cc2 ON (cc2.descendant = cc.descendant AND cc2.depth = 1)
+                WHERE cc.ancestor = ? AND cc.depth > 0', $id)->fetchAll();
+        }
+
+        return $data;
     }
 
 
