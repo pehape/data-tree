@@ -53,7 +53,7 @@
         return parameters;
     };
 
-    $('#{!$options->elementId}')
+    $('#{$options->elementId|noescape}')
         .jstree({
             core: {
                 animation: 0,
