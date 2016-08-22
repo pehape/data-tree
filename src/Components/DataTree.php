@@ -477,7 +477,7 @@ class DataTree extends UI\Control
     public function onCreateNodeCallback(DataTree $tree, ArrayHash $parameters)
     {
         try {
-            $node = $this->dataSource->createNode($parameters->id, [
+            $nodeId = $this->dataSource->createNode($parameters->id, [
                 'name' => $parameters->text,
                 'type' => $parameters->type,
             ]);
@@ -485,7 +485,7 @@ class DataTree extends UI\Control
             $this->sendErrorResponse([]);
         }
 
-        $this->sendSuccessResponse(['id' => $node->id]);
+        $this->sendSuccessResponse(['id' => $nodeId]);
     }
 
 
