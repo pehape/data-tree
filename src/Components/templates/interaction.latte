@@ -87,7 +87,11 @@
                 {'id': data.node.parent, 'text': data.node.text, 'type': data.node.type});
 
             callback.done(function (response) {
-                tree.set_id(data.node, response.id);
+                if (response.type === 'success') {
+                    tree.set_id(data.node, response.data.id);
+                } else {
+                    tree.refresh(data.node);
+                }
             });
             callback.fail(function () {
                 tree.refresh(data.node);
@@ -101,7 +105,11 @@
                 {'id': data.node.id, 'text': data.node.text});
 
             callback.done(function (response) {
-                tree.refresh(data.node);
+                if (response.type === 'success') {
+                    tree.refresh(data.node);
+                } else {
+                    tree.refresh(data.node);
+                }
             });
             callback.fail(function () {
                 tree.refresh(data.node);
@@ -115,7 +123,11 @@
                 {'id': data.node.id, 'parent': data.parent});
 
             callback.done(function (response) {
-                tree.refresh(data.node);
+                if (response.type === 'success') {
+                    tree.refresh(data.node);
+                } else {
+                    tree.refresh(data.node);
+                }
             });
             callback.fail(function () {
                 tree.refresh(data.node);
@@ -140,7 +152,11 @@
                 {'id': data.node.id, 'nodes': data.node.children_d});
 
             callback.done(function (response) {
-                tree.refresh(data.node);
+                if (response.type === 'success') {
+                    tree.refresh(data.node);
+                } else {
+                    tree.refresh(data.node);
+                }
             });
             callback.fail(function () {
                 tree.refresh(data.node);

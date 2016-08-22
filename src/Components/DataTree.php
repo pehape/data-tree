@@ -76,9 +76,13 @@ class DataTree extends UI\Control
     /** Events. */
     use Events\EventsTrait;
 
-    /** Constants. */
+    /** State constants. */
     const STATE_OPEN = 1;
     const STATE_CLOSED = 0;
+
+    /** Responses. */
+    const RESPONSE_SUCCESS = 'success';
+    const RESPONSE_ERROR = 'error';
 
 
     /**
@@ -237,11 +241,36 @@ class DataTree extends UI\Control
     /**
      * Send response to client.
      * @param array $data
+     * @param int $type
      */
-    public function sendResponse(array $data)
+    private function sendResponse(array $data, $type)
     {
-        $jsonResponse = new Responses\JsonResponse($data);
+        $responseData = [
+            'type' => $type,
+            'data' => $data,
+        ];
+        $jsonResponse = new Responses\JsonResponse($responseData);
         $this->presenter->sendResponse($jsonResponse);
+    }
+
+
+    /**
+     * Send succes response to client.
+     * @param array $data
+     */
+    public function sendSuccessResponse(array $data)
+    {
+        $this->sendResponse($data, self::RESPONSE_SUCCESS);
+    }
+
+
+    /**
+     * Send error response to client.
+     * @param array $data
+     */
+    public function sendErrorResponse(array $data)
+    {
+        $this->sendResponse($data, self::RESPONSE_SUCCESS);
     }
 
 
