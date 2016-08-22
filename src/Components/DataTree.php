@@ -13,6 +13,7 @@ use Nette\Localization;
 use Nette\Utils\Arrays;
 use Nette\Utils\ArrayHash;
 use Pehape\DataTree\Events;
+use Pehape\DataTree\Exceptions;
 use Pehape\DataTree\Mappers;
 use Pehape\DataTree\Sources;
 use Pehape\DataTree\Localization\Untranslation;
@@ -108,6 +109,8 @@ class DataTree extends UI\Control
         $this->translator = $translator;
         $this->options = Arrays::mergeTree($this->options, $this->defaultOptions);
         $this->plugins = $this->defaultPlugins;
+
+        $this->setDefaultCallbacks();
     }
 
 
@@ -170,15 +173,6 @@ class DataTree extends UI\Control
      */
     public function handleCallback($callback)
     {
-        if (count($this->$callback) === 0) {
-            if ($callback === 'onLoadData') {
-                $nodes = $this->getData();
-                $this->sendResponse($nodes);
-            }
-
-            $this->sendResponse([]);
-        }
-
         $parameters = $this->processParameters($this->getParameters());
         $this->$callback($this, $parameters);
     }
@@ -443,6 +437,99 @@ class DataTree extends UI\Control
     {
         $this->themeTemplate = $themeTemplate;
         return $this;
+    }
+
+
+    /** Set default callbacks. */
+    private function setDefaultCallbacks()
+    {
+        $this->onLoadNodes[] = [$this, 'onLoadNodesCallback'];
+        $this->onCreateNode[] = [$this, 'onCreateNodeCallback'];
+        $this->onRenameNode[] = [$this, 'onRenameNodeCallback'];
+        $this->onMoveNode[] = [$this, 'onMoveNodeCallback'];
+        $this->onDeleteNode[] = [$this, 'onDeleteNodeCallback'];
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onLoadNodesCallback(DataTree $tree)
+    {
+        $tree->sendSuccessResponse($this->dataSource->getNodes());
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onCreateNodeCallback(DataTree $tree, ArrayHash $parameters)
+    {
+        try {
+            $node = $this->dataSource->createNode($parameters->id, [
+                'name' => $parameters->text,
+                'type' => $parameters->type,
+            ]);
+        } catch (Exceptions\DatabaseSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse(['id' => $node->id]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onRenameNodeCallback(DataTree $tree, ArrayHash $parameters)
+    {
+        try {
+            $this->dataSource->updateNode($parameters->id, ['name' => $parameters->text]);
+        } catch (Exceptions\DatabaseSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse([]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onMoveNodeCallback(DataTree $tree, ArrayHash $parameters)
+    {
+        try {
+            $this->dataSource->moveNode($parameters->id, $parameters->parent);
+        } catch (Exceptions\DatabaseSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse([]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onDeleteNodeCallback(DataTree $tree, ArrayHash $parameters)
+    {
+        try {
+            $this->dataSource->removeNode($parameters->id);
+        } catch (Exceptions\DatabaseSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse([]);
     }
 
 
