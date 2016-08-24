@@ -237,7 +237,7 @@ class DataTree extends UI\Control
      * @param array $data
      * @param int $type
      */
-    private function sendResponse(array $data, $type = NULL)
+    public function sendResponse(array $data, $type = NULL)
     {
         if ($type !== NULL) {
             $responseData = [
