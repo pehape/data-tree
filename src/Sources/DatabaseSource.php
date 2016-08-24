@@ -223,6 +223,19 @@ class DatabaseSource implements IDataSource
     }
 
 
+    /**
+     * Get parents of node.
+     * @param int $id
+     * @return array
+     */
+    public function getParentsFrom($id)
+    {
+        return $this->db->query('SELECT c.*, depth FROM ' . $this->getBaseTableName() . ' c
+            JOIN ' . $this->getClosureTableName() . ' cc ON (c.id = cc.ancestor)
+            WHERE cc.descendant = ? ORDER BY depth ASC', $id)->fetchAll();
+    }
+
+
     /** @return string */
     public function getBaseTableName()
     {
