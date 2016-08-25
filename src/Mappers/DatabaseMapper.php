@@ -51,6 +51,7 @@ class DatabaseMapper implements IDataMapper
     public function applyMapping($data)
     {
         $mappedData = [];
+        $rootId = $this->getRootId($data);
         foreach ($data as $dataItem) {
             $mappedItem = [];
             foreach ($this->getMapping() as $key => $replacement) {
@@ -61,7 +62,7 @@ class DatabaseMapper implements IDataMapper
                 $mappedItem[$replacement] = $dataItem->$key;
             }
 
-            if ($mappedItem['parent'] === 0) {
+            if ($mappedItem['parent'] === $rootId) {
                 $mappedItem['parent'] = '#';
             }
 
@@ -105,6 +106,18 @@ class DatabaseMapper implements IDataMapper
         }
 
         return $mapping;
+    }
+
+
+    /** @return int */
+    private function getRootId(array $data)
+    {
+        $parents = [];
+        foreach ($data as $item) {
+            $parents[] = $item->ancestor;
+        }
+
+        return (empty($parents) === FALSE) ? min($parents) : 0;
     }
 
 
