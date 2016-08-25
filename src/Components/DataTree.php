@@ -7,6 +7,7 @@
 
 namespace Pehape\DataTree\Components;
 
+use Nette\Application\IPresenter;
 use Nette\Application\Responses;
 use Nette\Application\UI;
 use Nette\Localization;
@@ -44,6 +45,12 @@ class DataTree extends UI\Control
 
     /** @var UI\ITemplate */
     private $themeTemplate;
+
+    /** @var IPresenter */
+    private $presenter = NULL;
+
+    /** @var bool */
+    private $isAjax;
 
     /** @var string */
     private $defaultOptions = [
@@ -110,7 +117,7 @@ class DataTree extends UI\Control
         $this->options = Arrays::mergeTree($this->options, $this->defaultOptions);
         $this->plugins = $this->defaultPlugins;
 
-        $this->setDefaultCallbacks();
+        $this->onAnchor[] = [$this, 'onAttachedToPresenter'];
     }
 
 
@@ -124,9 +131,9 @@ class DataTree extends UI\Control
             $template = $this->template;
             $template->setFile(__DIR__ . '/templates/default.latte');
         }
-
         $template->setTranslator($this->translator);
         $template->options = ArrayHash::from($this->options);
+        $template->isAjax = $this->presenter->isAjax();
         $template->render();
     }
 
@@ -174,7 +181,12 @@ class DataTree extends UI\Control
     public function handleCallback($callback)
     {
         $parameters = $this->processParameters($this->getParameters());
-        $this->$callback($this, $parameters);
+        if (empty($this->$callback) === TRUE) {
+            $defaultCallback = $callback . 'Callback';
+            $this->$defaultCallback($this, $parameters);
+        } else {
+            $this->$callback($this, $parameters);
+        }
     }
 
 
@@ -445,18 +457,6 @@ class DataTree extends UI\Control
     }
 
 
-    /** Set default callbacks. */
-    private function setDefaultCallbacks()
-    {
-        $this->onLoadNodes[] = [$this, 'onLoadNodesCallback'];
-        $this->onCreateNode[] = [$this, 'onCreateNodeCallback'];
-        $this->onRenameNode[] = [$this, 'onRenameNodeCallback'];
-        $this->onMoveNode[] = [$this, 'onMoveNodeCallback'];
-        $this->onCopyNode[] = [$this, 'onCopyNodeCallback'];
-        $this->onDeleteNode[] = [$this, 'onDeleteNodeCallback'];
-    }
-
-
     /**
      * @internal
      * @param DataTree $tree
@@ -467,6 +467,18 @@ class DataTree extends UI\Control
         $nodes = $this->dataSource->getNodes();
         $mappedData = $this->dataMapper->applyMapping($nodes);
         $tree->sendResponse($mappedData);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onSelectNodeCallback(DataTree $tree, ArrayHash $parameters)
+    {
+        $node = $this->dataSource->getNode($parameters->id);
+        $tree->sendResponse($node->toArray());
     }
 
 
@@ -555,6 +567,16 @@ class DataTree extends UI\Control
         }
 
         $this->sendSuccessResponse([]);
+    }
+
+
+    /**
+     * @internal
+     * @param UI\Control $sender
+     */
+    public function onAttachedToPresenter(UI\Control $sender)
+    {
+        $this->presenter = $sender->lookup('\Nette\Application\IPresenter');
     }
 
 

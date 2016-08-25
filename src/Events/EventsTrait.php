@@ -16,27 +16,27 @@ trait EventsTrait
 {
 
     /** @var callable[] function (DataTree $tree); Occurs when the data for tree are loaded */
-    public $onLoadNodes;
+    public $onLoadNodes = [];
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a new node is created */
-    public $onCreateNode;
+    public $onCreateNode = [];
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a node is renamed */
-    public $onRenameNode;
+    public $onRenameNode = [];
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a node is moved */
-    public $onMoveNode;
+    public $onMoveNode = [];
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a node is deleted */
-    public $onDeleteNode;
+    public $onDeleteNode = [];
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a node is selected */
-    public $onSelectNode;
+    public $onSelectNode = [];
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a node is pasted after copying */
-    public $onCopyNode;
+    public $onCopyNode = [];
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a tree is completely loaded */
-    public $onLoaded;
+    public $onLoaded = [];
 
 }
