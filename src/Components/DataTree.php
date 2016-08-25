@@ -143,7 +143,7 @@ class DataTree extends UI\Control
         }
 
         $template->setTranslator($this->translator);
-        $template->controlName = $this->name;
+        $template->controlName = $this->getControlPath();
         $template->plugins = $this->plugins;
         $template->options = ArrayHash::from($this->options);
         $template->render();
@@ -537,6 +537,23 @@ class DataTree extends UI\Control
         }
 
         $this->sendSuccessResponse([]);
+    }
+
+
+    /**
+     * Get component name path.
+     * @return string
+     */
+    private function getControlPath()
+    {
+        $names = [$this->name];
+        $parent = $this;
+        while (($parent = $parent->getParent()) !== NULL) {
+            $names[] = $parent->name;
+        }
+
+        array_pop($names); // Remove presenter
+        return join('-', array_reverse($names));
     }
 
 
