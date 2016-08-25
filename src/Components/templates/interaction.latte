@@ -102,7 +102,7 @@
             var tree = data.instance;
             var callback = datatree.fireCallback(
                 {link callback!, onRenameNode},
-                {'id': data.node.id, 'text': data.node.text});
+                {'id': data.node.id, 'text': data.node.text, 'type': data.node.type});
 
             callback.done(function (response) {
                 if (response.type === 'success') {
@@ -120,7 +120,7 @@
             var tree = data.instance;
             var callback = datatree.fireCallback(
                 {link callback!, onMoveNode},
-                {'id': data.node.id, 'parent': data.parent});
+                {'id': data.node.id, 'parent': data.parent, 'type': data.node.type});
 
             callback.done(function (response) {
                 if (response.type === 'success') {
@@ -138,7 +138,7 @@
             var tree = data.instance;
             var callback = datatree.fireCallback(
                 {link callback!, onSelectNode},
-                {'id': data.node.id});
+                {'id': data.node.id, 'type': data.node.type});
             
             callback.fail(function () {
                 tree.refresh(data.node);
@@ -149,7 +149,7 @@
             var tree = data.instance;
             var callback = datatree.fireCallback(
                 {link callback!, onDeleteNode},
-                {'id': data.node.id, 'nodes': data.node.children_d});
+                {'id': data.node.id, 'nodes': data.node.children_d, 'type': data.node.type});
 
             callback.done(function (response) {
                 if (response.type === 'success') {
@@ -171,7 +171,7 @@
             var tree = data.instance;
             var callback = datatree.fireCallback(
                 {link callback!, onCopyNode},
-                {'id': data.node[0].id, 'parent': data.parent});
+                {'id': data.node[0].id, 'parent': data.parent, 'type': data.node[0].type});
 
             callback.done(function (response) {
                 if (response.type === 'success') {
