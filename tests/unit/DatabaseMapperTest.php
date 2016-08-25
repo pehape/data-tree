@@ -84,4 +84,12 @@ class DatabaseMapperTest extends \Codeception\Test\Unit
     }
 
 
+    /** Test applying of minimal mapping. */
+    public function testApplyMappingToEmptyData()
+    {
+        $mappedData = $this->mapper->applyMapping([]);
+        $this->tester->assertEmpty($mappedData);
+    }
+
+
 }
