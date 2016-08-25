@@ -179,6 +179,34 @@ class DatabaseSource implements IDataSource
 
 
     /**
+     * Copy node and replace data.
+     * @param int $nodeId
+     * @param int $parentId
+     * @param array $replacement
+     * @return int
+     * @throws Exceptions\DatabaseSourceException
+     */
+    public function copyNode($nodeId, $parentId, array $replacement = [])
+    {
+        $node = $this->getNode($nodeId);
+        $data = [];
+        foreach ($node as $key => $value) {
+            if ($key === 'id') {
+                continue;
+            }
+
+            if (array_key_exists($key, $replacement) === TRUE) {
+                $data[$key] = $replacement[$key];
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $this->createNode($parentId, $data);
+    }
+
+
+    /**
      * Remove node.
      * @param int $id
      * @throws Exceptions\DatabaseSourceException
