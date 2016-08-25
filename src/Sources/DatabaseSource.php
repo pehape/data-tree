@@ -38,6 +38,9 @@ class DatabaseSource implements IDataSource
     /** @var array */
     private $dbTables;
 
+    /** @var int Count of started transactions. */
+    private $transactionsCount = 0;
+
     /** Default table names. */
     const DEF_BASE_TABLE_NAME = 'data';
     const DEF_CLOSURE_TABLE_NAME = 'data_closure';
@@ -100,7 +103,7 @@ class DatabaseSource implements IDataSource
      */
     public function createNode($parentId, array $data)
     {
-        $this->db->beginTransaction();
+        $this->beginTransaction();
         try {
             $operation = $this->getBaseTable()->insert($data);
             if ($operation === FALSE) {
@@ -121,9 +124,9 @@ class DatabaseSource implements IDataSource
                 throw new Exceptions\DatabaseSourceException('Tree could not be updated');
             }
 
-            $this->db->commit();
+            $this->commit();
         } catch (\Exception $e) {
-            $this->db->rollBack();
+            $this->rollBack();
             throw new Exceptions\DatabaseSourceException($e->getMessage());
         }
 
@@ -158,7 +161,7 @@ class DatabaseSource implements IDataSource
      */
     public function moveNode($id, $parentId)
     {
-        $this->db->beginTransaction();
+        $this->beginTransaction();
         try {
             $this->db->query('DELETE cc_a FROM ' . $this->getClosureTableName() . ' cc_a
                 JOIN ' . $this->getClosureTableName() . ' cc_d USING(descendant)
@@ -170,9 +173,9 @@ class DatabaseSource implements IDataSource
                 FROM ' . $this->getClosureTableName() . ' AS supertree JOIN ' . $this->getClosureTableName() . ' AS subtree
                 WHERE subtree.ancestor = ?
                 AND supertree.descendant = ?', $id, $parentId);
-            $this->db->commit();
+            $this->commit();
         } catch (\Exception $e) {
-            $this->db->rollBack();
+            $this->rollBack();
             throw new Exceptions\DatabaseSourceException($e->getMessage());
         }
     }
@@ -185,24 +188,33 @@ class DatabaseSource implements IDataSource
      * @param array $replacement
      * @return int
      * @throws Exceptions\DatabaseSourceException
+     * @todo Recursive copy
      */
-    public function copyNode($nodeId, $parentId, array $replacement = [])
+    public function copyNode($nodeId, $parentId, array $replacement = [], $recursive = TRUE)
     {
-        $node = $this->getNode($nodeId);
-        $data = [];
-        foreach ($node as $key => $value) {
-            if ($key === 'id') {
-                continue;
+        $this->beginTransaction();
+        try {
+            $node = $this->getNode($nodeId);
+            $data = [];
+            foreach ($node as $key => $value) {
+                if ($key === 'id') {
+                    continue;
+                }
+
+                if (array_key_exists($key, $replacement) === TRUE) {
+                    $data[$key] = $replacement[$key];
+                } else {
+                    $data[$key] = $value;
+                }
             }
 
-            if (array_key_exists($key, $replacement) === TRUE) {
-                $data[$key] = $replacement[$key];
-            } else {
-                $data[$key] = $value;
-            }
+            $newId = $this->createNode($parentId, $data);
+            $this->commit();
+            return $newId;
+        } catch (\Exception $e) {
+            $this->rollBack();
+            throw new Exceptions\DatabaseSourceException($e->getMessage());
         }
-
-        return $this->createNode($parentId, $data);
     }
 
 
@@ -365,6 +377,40 @@ class DatabaseSource implements IDataSource
     private function tableExists($tableName)
     {
         return in_array($tableName, $this->dbTables);
+    }
+
+
+    /**
+     * Shortcut for \Nette\Database\Context::beginTransaction().
+     * Ignore if there is an active transaction in database.
+     */
+    public function beginTransaction()
+    {
+        if ($this->transactionsCount === 0) {
+            $this->db->beginTransaction();
+        }
+
+        $this->transactionsCount++;
+    }
+
+
+    /** Shortcut for \Nette\Database\Context::commit(). */
+    public function commit()
+    {
+        $this->transactionsCount--;
+        if ($this->transactionsCount === 0) {
+            $this->db->commit();
+        }
+    }
+
+
+    /** Shortcut for \Nette\Database\Context::rollBack(). */
+    public function rollBack()
+    {
+        $this->transactionsCount--;
+        if ($this->transactionsCount === 0) {
+            $this->db->rollBack();
+        }
     }
 
 

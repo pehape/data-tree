@@ -60,11 +60,18 @@ interface IDataSource
 
 
     /**
+     * Move node.
+     * @param int $id
+     * @param int $parentId
+     * @return mixed
+     */
+    public function copyNode($id, $parentId, array $replacement, $recursive);
+
+
+    /**
      * Remove node.
      * @param int $id
      * @return mixed
      */
     public function removeNode($id);
-
-
 }

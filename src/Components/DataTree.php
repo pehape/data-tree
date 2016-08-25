@@ -452,6 +452,7 @@ class DataTree extends UI\Control
         $this->onCreateNode[] = [$this, 'onCreateNodeCallback'];
         $this->onRenameNode[] = [$this, 'onRenameNodeCallback'];
         $this->onMoveNode[] = [$this, 'onMoveNodeCallback'];
+        $this->onCopyNode[] = [$this, 'onCopyNodeCallback'];
         $this->onDeleteNode[] = [$this, 'onDeleteNodeCallback'];
     }
 
@@ -520,6 +521,23 @@ class DataTree extends UI\Control
         }
 
         $this->sendSuccessResponse([]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onCopyNodeCallback(DataTree $tree, ArrayHash $parameters)
+    {
+        try {
+            $nodeId = $this->dataSource->copyNode($parameters->id, $parameters->parent);
+        } catch (Exceptions\DatabaseSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse(['id' => $nodeId]);
     }
 
 

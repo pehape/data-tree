@@ -124,8 +124,8 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
             'type' => 'group',
         ];
         $this->tester->assertEquals(6, count($this->source->getNodes()));
-        $this->tester->assertEquals(17, count($this->source->getClosureTable()->fetchAll()));
-        $this->source->createNode(0, $insertNode);
+        $this->tester->assertEquals(16, count($this->source->getClosureTable()->fetchAll()));
+        $this->source->createNode(1, $insertNode);
         $this->tester->assertEquals(7, count($this->source->getNodes()));
         $this->tester->assertEquals(19, count($this->source->getClosureTable()->fetchAll()));
     }
@@ -190,13 +190,13 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
     public function testRemoveNode()
     {
         $this->tester->assertEquals(6, count($this->source->getNodes()));
-        $this->tester->assertEquals(17, count($this->source->getClosureTable()->fetchAll()));
+        $this->tester->assertEquals(16, count($this->source->getClosureTable()->fetchAll()));
         $this->source->removeNode(6);
         $this->tester->assertEquals(5, count($this->source->getNodes()));
-        $this->tester->assertEquals(14, count($this->source->getClosureTable()->fetchAll()));
+        $this->tester->assertEquals(13, count($this->source->getClosureTable()->fetchAll()));
         $this->source->removeNode(4);
         $this->tester->assertEquals(3, count($this->source->getNodes()));
-        $this->tester->assertEquals(9, count($this->source->getClosureTable()->fetchAll()));
+        $this->tester->assertEquals(8, count($this->source->getClosureTable()->fetchAll()));
     }
 
 
@@ -206,5 +206,20 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
         $this->source->removeNode(-1);
     }
 
+    /** Test copy node. */
+    public function testCopyNode()
+    {
+        $this->source->copyNode(6, 1);
+        $childrenFirst = $this->source->getClosureTable()->where([
+            'ancestor' => 4,
+            'descendant' => 6,
+        ])->fetchAll();
+        $childrenSecond = $this->source->getClosureTable()->where([
+            'ancestor' => 1,
+            'descendant' => 7,
+        ])->fetchAll();
+        $this->tester->assertEquals(1, count($childrenFirst));
+        $this->tester->assertEquals(1, count($childrenSecond));
+    }
 
 }

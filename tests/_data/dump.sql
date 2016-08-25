@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS `data_closure` (
 -- Dumping data for table datatree.data_closure: ~11 rows (approximately)
 /*!40000 ALTER TABLE `data_closure` DISABLE KEYS */;
 INSERT INTO `data_closure` (`ancestor`, `descendant`, `depth`) VALUES
-	(0, 0, 0),
 	(1, 1, 0),
 	(2, 2, 0),
 	(3, 3, 0),

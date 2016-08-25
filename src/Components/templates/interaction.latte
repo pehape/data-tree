@@ -163,6 +163,28 @@
             });
             
         })
+        .on('paste.jstree', function (e, data) {
+            if (data.mode !== 'copy_node') {
+                return;
+            }
+            
+            var tree = data.instance;
+            var callback = datatree.fireCallback(
+                {link callback!, onCopyNode},
+                {'id': data.node[0].id, 'parent': data.parent});
+
+            callback.done(function (response) {
+                if (response.type === 'success') {
+                    tree.refresh(data.node);
+                } else {
+                    tree.refresh(data.node);
+                }
+            });
+            callback.fail(function () {
+                tree.refresh(data.node);
+            });
+            
+        })
         .on('loaded.jstree', function (e, data) {
             var tree = data.instance;
             {if $options['defaultState'] === \Pehape\DataTree\Components\DataTree::STATE_OPEN}
