@@ -33,8 +33,10 @@ trait EventsTrait
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a node is selected */
     public $onSelectNode;
 
+    /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a node is pasted after copying */
+    public $onCopyNode;
+
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a tree is completely loaded */
     public $onLoaded;
-
 
 }
