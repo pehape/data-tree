@@ -43,9 +43,6 @@ class DataTree extends UI\Control
     /** @var IPresenter */
     private $presenter = NULL;
 
-    /** @var bool */
-    private $isAjax;
-
     /** @var string */
     private $defaultOptions = [
         'elementType' => 'div',
@@ -99,8 +96,6 @@ class DataTree extends UI\Control
         $this->translator = $translator;
         $this->options = Arrays::mergeTree($this->options, $this->defaultOptions);
         $this->plugins = $this->defaultPlugins;
-
-        $this->onAnchor[] = [$this, 'onAttachedToPresenter'];
     }
 
 
@@ -498,16 +493,6 @@ class DataTree extends UI\Control
 
 
     /**
-     * @internal
-     * @param UI\Control $sender
-     */
-    public function onAttachedToPresenter(UI\Control $sender)
-    {
-        $this->presenter = $sender->lookup('\Nette\Application\IPresenter');
-    }
-
-
-    /**
      * Get component name path.
      * @return string
      */
@@ -521,6 +506,14 @@ class DataTree extends UI\Control
 
         array_pop($names); // Remove presenter
         return join('-', array_reverse($names));
+    }
+
+
+    /** @inheritdoc */
+    protected function attached($presenter)
+    {
+        parent::attached($presenter);
+        $this->presenter = $this->lookup('Nette\Application\IPresenter');
     }
 
 
