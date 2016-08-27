@@ -38,13 +38,7 @@ class DataTree extends UI\Control
     private $translator;
 
     /** @var UI\ITemplate */
-    private $defaultTemplate;
-
-    /** @var UI\ITemplate */
-    private $interactionTemplate;
-
-    /** @var UI\ITemplate */
-    private $themeTemplate;
+    private $templatePath;
 
     /** @var IPresenter */
     private $presenter = NULL;
@@ -59,17 +53,6 @@ class DataTree extends UI\Control
         'title' => 'Tree',
         'titleElementType' => 'div',
         'defaultState' => self::STATE_OPEN,
-        'interaction' => [
-            'include' => TRUE,
-            'includePath' => '/datatree/js',
-            'applyWrap' => TRUE,
-            'applyReady' => TRUE,
-        ],
-        'theme' => [
-            'include' => TRUE,
-            'includePath' => '/datatree/css/themes',
-            'name' => 'default',
-        ],
     ];
 
     /** @var array */
@@ -124,53 +107,18 @@ class DataTree extends UI\Control
     /** Render default template. */
     public function render()
     {
-        $template = NULL;
-        if ($this->defaultTemplate !== NULL) {
-            $template = $this->defaultTemplate;
+        if ($this->templatePath !== NULL) {
+            $this->template->setFile($this->templatePath);
         } else {
-            $template = $this->template;
-            $template->setFile(__DIR__ . '/templates/default.latte');
-        }
-        $template->setTranslator($this->translator);
-        $template->options = ArrayHash::from($this->options);
-        $template->isAjax = $this->presenter->isAjax();
-        $template->render();
-    }
-
-
-    /** Render template with JavaScript interaction. */
-    public function renderInteraction()
-    {
-        $template = NULL;
-        if ($this->interactionTemplate !== NULL) {
-            $template = $this->interactionTemplate;
-        } else {
-            $template = $this->template;
-            $template->setFile(__DIR__ . '/templates/interaction.latte');
+            $this->template->setFile(__DIR__ . '/templates/default.latte');
         }
 
-        $template->setTranslator($this->translator);
-        $template->controlName = $this->getControlPath();
-        $template->plugins = $this->plugins;
-        $template->options = ArrayHash::from($this->options);
-        $template->render();
-    }
-
-
-    /** Render template with CSS styles. */
-    public function renderTheme()
-    {
-        $template = NULL;
-        if ($this->themeTemplate !== NULL) {
-            $template = $this->themeTemplate;
-        } else {
-            $template = $this->template;
-            $template->setFile(__DIR__ . '/templates/theme.latte');
-        }
-
-        $template->setTranslator($this->translator);
-        $template->options = ArrayHash::from($this->options);
-        $template->render();
+        $this->template->setTranslator($this->translator);
+        $this->template->controlName = $this->getControlPath();
+        $this->template->plugins = $this->plugins;
+        $this->template->options = ArrayHash::from($this->options);
+        $this->template->isAjax = $this->presenter->isAjax();
+        $this->template->render();
     }
 
 
@@ -406,7 +354,7 @@ class DataTree extends UI\Control
     /** @return UI\ITemplate */
     public function getDefaultTemplate()
     {
-        return $this->defaultTemplate;
+        return $this->templatePath;
     }
 
 
@@ -425,34 +373,13 @@ class DataTree extends UI\Control
 
 
     /**
-     * @param UI\ITemplate $defaultTemplate
+     * Set custom template path.
+     * @param UI\ITemplate $templatePath
      * @return DataTree
      */
-    public function setDefaultTemplate(UI\ITemplate $defaultTemplate)
+    public function setTemplatePath($templatePath)
     {
-        $this->defaultTemplate = $defaultTemplate;
-        return $this;
-    }
-
-
-    /**
-     * @param UI\ITemplate $interactionTemplate
-     * @return DataTree
-     */
-    public function setInteractionTemplate(UI\ITemplate $interactionTemplate)
-    {
-        $this->interactionTemplate = $interactionTemplate;
-        return $this;
-    }
-
-
-    /**
-     * @param UI\ITemplate $themeTemplate
-     * @return DataTree
-     */
-    public function setThemeTemplate(UI\ITemplate $themeTemplate)
-    {
-        $this->themeTemplate = $themeTemplate;
+        $this->templatePath = $templatePath;
         return $this;
     }
 
