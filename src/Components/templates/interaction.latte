@@ -1,6 +1,8 @@
 <script type="text/javascript">
 
-    window.onload = function() {
+    {if $isAjax === FALSE}
+    window.addEventListener('load', function (event) {
+    {/if}
 
         var datatree = datatree || {};
 
@@ -181,7 +183,9 @@
                     tree.open_all();
                 {/if}
             });
-    
-    };
-    
+
+    {if $isAjax === FALSE}
+    });
+    {/if}
+
 </script>
