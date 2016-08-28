@@ -169,22 +169,23 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
         });
     }
 
+
     /** Test move node. */
     public function testMoveNode()
     {
         $this->source->moveNode(6, 1);
         $childrenOne = $this->source->getClosureTable()->where([
-            'ancestor' => 1,
-            'descendant' => 6,
-        ])->fetchAll();
+                'ancestor' => 1,
+                'descendant' => 6,
+            ])->fetchAll();
         $childrenSix = $this->source->getClosureTable()->where([
-            'ancestor' => 2,
-            'descendant' => 6,
-        ])->fetchAll();
+                'ancestor' => 2,
+                'descendant' => 6,
+            ])->fetchAll();
         $this->tester->assertEquals(1, count($childrenOne));
         $this->tester->assertEquals(0, count($childrenSix));
     }
-    
+
 
     /** Test create node. */
     public function testRemoveNode()
@@ -206,20 +207,38 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
         $this->source->removeNode(-1);
     }
 
+
     /** Test copy node. */
     public function testCopyNode()
     {
         $this->source->copyNode(6, 1);
         $childrenFirst = $this->source->getClosureTable()->where([
-            'ancestor' => 4,
-            'descendant' => 6,
-        ])->fetchAll();
+                'ancestor' => 4,
+                'descendant' => 6,
+            ])->fetchAll();
         $childrenSecond = $this->source->getClosureTable()->where([
-            'ancestor' => 1,
-            'descendant' => 7,
-        ])->fetchAll();
+                'ancestor' => 1,
+                'descendant' => 7,
+            ])->fetchAll();
         $this->tester->assertEquals(1, count($childrenFirst));
         $this->tester->assertEquals(1, count($childrenSecond));
     }
+
+
+    /** Test getParents method with self. */
+    public function testGetParentsWithSelf()
+    {
+        $parents = $this->source->getParentsFrom(6);
+        $this->tester->assertEquals(3, count($parents));
+    }
+
+
+    /** Test getParents method without self. */
+    public function testGetParentsWithoutSelf()
+    {
+        $parents = $this->source->getParentsFrom(6, FALSE);
+        $this->tester->assertEquals(2, count($parents));
+    }
+
 
 }
