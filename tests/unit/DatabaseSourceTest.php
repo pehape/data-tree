@@ -10,6 +10,7 @@ namespace Pehape\DataTree\Tests\Unit;
 use Codeception\Util\Fixtures;
 use Nette\Database\Context;
 use Nette\DI\Container;
+use Pehape\DataTree\Exceptions;
 use Pehape\DataTree\Sources\DatabaseSource;
 
 
@@ -264,11 +265,17 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
         $insertNode = [
             'name' => 'Test group',
             'type' => 'group',
+            'unvalid_column' => 'unvalid_column',
         ];
-        $this->source->createNode(1, $insertNode);
-//        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() use ($updateNode) {
-            $this->db->beginTransaction();
-//        });
+        try {
+            $this->source->createNode(1, $insertNode);
+        } catch (Exceptions\DataSourceException $e) {
+            $this->tester->assertEquals(6, count($this->source->getNodes()));
+            $this->tester->assertEquals(16, count($this->source->getClosureTable()->fetchAll()));
+            $this->tester->expectException('PDOException', function() {
+                $this->db->rollBack();
+            });
+        }
     }
 
 
