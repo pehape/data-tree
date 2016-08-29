@@ -241,4 +241,35 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
     }
 
 
+    /** Test internal transactions are ignored. */
+    public function testDatabaseSourceOuterTransaction()
+    {
+        $this->db->beginTransaction();
+        $insertNode = [
+            'name' => 'Test group',
+            'type' => 'group',
+        ];
+        $this->source->createNode(1, $insertNode);
+        $this->tester->assertEquals(7, count($this->source->getNodes()));
+        $this->tester->assertEquals(19, count($this->source->getClosureTable()->fetchAll()));
+        $this->db->rollBack();
+        $this->tester->assertEquals(6, count($this->source->getNodes()));
+        $this->tester->assertEquals(16, count($this->source->getClosureTable()->fetchAll()));
+    }
+
+
+    /** Test internal transactions are fired. */
+    public function testDatabaseSourceInnerTransactionIsActive()
+    {
+        $insertNode = [
+            'name' => 'Test group',
+            'type' => 'group',
+        ];
+        $this->source->createNode(1, $insertNode);
+//        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() use ($updateNode) {
+            $this->db->beginTransaction();
+//        });
+    }
+
+
 }

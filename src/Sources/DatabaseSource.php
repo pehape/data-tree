@@ -38,8 +38,8 @@ class DatabaseSource implements IDataSource
     /** @var array */
     private $dbTables;
 
-    /** @var int Count of started transactions. */
-    private $transactionsCount = 0;
+    /** @var bool */
+    private $selfTransaction = FALSE;
 
     /** Default table names. */
     const DEF_BASE_TABLE_NAME = 'data';
@@ -387,36 +387,39 @@ class DatabaseSource implements IDataSource
     }
 
 
-    /**
-     * Shortcut for \Nette\Database\Context::beginTransaction().
-     * Ignore if there is an active transaction in database.
-     */
-    public function beginTransaction()
+    /** @return bool */
+    private function inTransaction()
     {
-        if ($this->transactionsCount === 0) {
+        return $this->db->getConnection()->getPdo()->inTransaction();
+    }
+
+
+    /** Begin transaction if there is no active active transaction. */
+    private function beginTransaction()
+    {
+        if ($this->inTransaction() === FALSE) {
             $this->db->beginTransaction();
+            $this->selfTransaction = TRUE;
         }
-
-        $this->transactionsCount++;
     }
 
 
-    /** Shortcut for \Nette\Database\Context::commit(). */
-    public function commit()
+    /** Commit self transaction. */
+    private function commit()
     {
-        $this->transactionsCount--;
-        if ($this->transactionsCount === 0) {
+        if ($this->selfTransaction === TRUE) {
             $this->db->commit();
+            $this->selfTransaction = FALSE;
         }
     }
 
 
-    /** Shortcut for \Nette\Database\Context::rollBack(). */
-    public function rollBack()
+    /** Rollback self transaction. */
+    private function rollBack()
     {
-        $this->transactionsCount--;
-        if ($this->transactionsCount === 0) {
+        if ($this->selfTransaction === TRUE) {
             $this->db->rollBack();
+            $this->selfTransaction = FALSE;
         }
     }
 
