@@ -4,47 +4,6 @@
     window.addEventListener('load', function (event) {
     {/if}
 
-        var datatree = datatree || {};
-
-        datatree.prefixParameters = function (parameters, prefix, joinPrefix) {
-            var prefixedParameters = {};
-            var buildJoinPrefix = joinPrefix + '_';
-            if (typeof joinPrefix == 'undefined') {
-                buildJoinPrefix = '';
-            }
-            $.each(parameters, function(key, value) {
-                prefixedParameters[prefix + '-' + buildJoinPrefix + key] = value;
-            });
-            return prefixedParameters;
-        };
-
-        datatree.fireCallback = function(url, parameters) {
-            var parameters = datatree.prefixParameters(parameters, {$controlName});
-
-            {if isset($options['joinTree'])}
-            var joinedTreeParameters = this.getJoinedTreeParameters({$options['joinTree']});
-            var prefixedJoinedTreeParameters = this.prefixParameters(joinedTreeParameters, {$controlName}, {$options['joinTree']});
-            $.each(prefixedJoinedTreeParameters, function (key, value) {
-                parameters[key] = value;
-            })
-            {/if}
-
-            var callback = $.post(url, parameters);
-            callback.always(function (response) {
-                if (typeof response.snippets == 'object') {
-                    $.nette.ext('snippets').updateSnippets(response.snippets);
-                    $.nette.load();
-                }
-            });
-            return callback;
-        };
-
-        datatree.getJoinedTreeParameters = function(joinedTreeId) {
-            var parameters = {};
-            parameters.selectedNodes = $('#' + joinedTreeId).jstree(true).get_selected();
-            return parameters;
-        };
-
         $('#{$options->elementId|noescape}')
             .jstree({
                 core: {
@@ -74,9 +33,11 @@
             })
             .on('create_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = datatree.fireCallback(
+                var callback = $.datatree.fireCallback(
                     {link callback!, onCreateNode},
-                    {'id': data.node.parent, 'text': data.node.text, 'type': data.node.type});
+                    {'id': data.node.parent, 'text': data.node.text, 'type': data.node.type},
+                    {$controlName},
+                    {$options['joinTree']});
 
                 callback.done(function (response) {
                     if (response.type === 'success') {
@@ -92,9 +53,11 @@
             })
             .on('rename_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = datatree.fireCallback(
+                var callback = $.datatree.fireCallback(
                     {link callback!, onRenameNode},
-                    {'id': data.node.id, 'text': data.node.text, 'type': data.node.type});
+                    {'id': data.node.id, 'text': data.node.text, 'type': data.node.type},
+                    {$controlName},
+                    {$options['joinTree']});
 
                 callback.done(function (response) {
                     if (response.type === 'success') {
@@ -110,9 +73,11 @@
             })
             .on('move_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = datatree.fireCallback(
+                var callback = $.datatree.fireCallback(
                     {link callback!, onMoveNode},
-                    {'id': data.node.id, 'parent': data.parent, 'type': data.node.type});
+                    {'id': data.node.id, 'parent': data.parent, 'type': data.node.type},
+                    {$controlName},
+                    {$options['joinTree']});
 
                 callback.done(function (response) {
                     if (response.type === 'success') {
@@ -128,9 +93,11 @@
             })
             .on('select_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = datatree.fireCallback(
+                var callback = $.datatree.fireCallback(
                     {link callback!, onSelectNode},
-                    {'id': data.node.id, 'type': data.node.type});
+                    {'id': data.node.id, 'type': data.node.type},
+                    {$controlName},
+                    {$options['joinTree']});
 
                 callback.fail(function () {
                     tree.refresh(data.node);
@@ -139,9 +106,11 @@
             })
             .on('delete_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = datatree.fireCallback(
+                var callback = $.datatree.fireCallback(
                     {link callback!, onDeleteNode},
-                    {'id': data.node.id, 'nodes': data.node.children_d, 'type': data.node.type});
+                    {'id': data.node.id, 'nodes': data.node.children_d, 'type': data.node.type},
+                    {$controlName},
+                    {$options['joinTree']});
 
                 callback.done(function (response) {
                     if (response.type === 'success') {
@@ -161,9 +130,11 @@
                 }
 
                 var tree = data.instance;
-                var callback = datatree.fireCallback(
+                var callback = $.datatree.fireCallback(
                     {link callback!, onCopyNode},
-                    {'id': data.node[0].id, 'parent': data.parent, 'type': data.node[0].type});
+                    {'id': data.node[0].id, 'parent': data.parent, 'type': data.node[0].type},
+                    {$controlName},
+                    {$options['joinTree']});
 
                 callback.done(function (response) {
                     if (response.type === 'success') {
