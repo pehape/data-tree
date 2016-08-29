@@ -70,13 +70,13 @@ class DatabaseSource implements IDataSource
      * Get node.
      * @param int $id
      * @return Table\IRow
-     * @throws Exceptions\DatabaseSourceException
+     * @throws Exceptions\DataSourceException
      */
     public function getNode($id)
     {
         $node = $this->getBaseTable()->get($id);
         if ($node === FALSE) {
-            throw new Exceptions\DatabaseSourceException('Node could not be found.');
+            throw new Exceptions\DataSourceException('Node could not be found.');
         }
 
         return $node;
@@ -99,7 +99,7 @@ class DatabaseSource implements IDataSource
      * @param int $parentId
      * @param array $data
      * @return int
-     * @throws Exceptions\DatabaseSourceException
+     * @throws Exceptions\DataSourceException
      */
     public function createNode($parentId, array $data)
     {
@@ -107,7 +107,7 @@ class DatabaseSource implements IDataSource
         try {
             $operation = $this->getBaseTable()->insert($data);
             if ($operation === FALSE) {
-                throw new Exceptions\DatabaseSourceException('Node could not be created.');
+                throw new Exceptions\DataSourceException('Node could not be created.');
             }
 
             $baseRelInsert = $this->getClosureTable()->insert([
@@ -121,13 +121,13 @@ class DatabaseSource implements IDataSource
                 ->fetchAll();
             $parentRelsInsert = $this->getClosureTable()->insert($parentRels);
             if ($baseRelInsert === FALSE || $parentRelsInsert === FALSE) {
-                throw new Exceptions\DatabaseSourceException('Tree could not be updated');
+                throw new Exceptions\DataSourceException('Tree could not be updated');
             }
 
             $this->commit();
         } catch (\Exception $e) {
             $this->rollBack();
-            throw new Exceptions\DatabaseSourceException($e->getMessage());
+            throw new Exceptions\DataSourceException($e->getMessage());
         }
 
         return $operation->id;
@@ -138,17 +138,17 @@ class DatabaseSource implements IDataSource
      * Update node.
      * @param int $id
      * @param array $data
-     * @throws Exceptions\DatabaseSourceException
+     * @throws Exceptions\DataSourceException
      */
     public function updateNode($id, array $data)
     {
         try {
             $updateResult = $this->getBaseTable()->get($id)->update($data);
             if ($updateResult === FALSE) {
-                throw new Exceptions\DatabaseSourceException('Node could not be updated.');
+                throw new Exceptions\DataSourceException('Node could not be updated.');
             }
         } catch (\Exception $e) {
-            throw new Exceptions\DatabaseSourceException($e->getMessage());
+            throw new Exceptions\DataSourceException($e->getMessage());
         }
     }
 
@@ -157,7 +157,7 @@ class DatabaseSource implements IDataSource
      * Move node.
      * @param int $id
      * @param int $parentId
-     * @throws Exceptions\DatabaseSourceException
+     * @throws Exceptions\DataSourceException
      */
     public function moveNode($id, $parentId)
     {
@@ -176,7 +176,7 @@ class DatabaseSource implements IDataSource
             $this->commit();
         } catch (\Exception $e) {
             $this->rollBack();
-            throw new Exceptions\DatabaseSourceException($e->getMessage());
+            throw new Exceptions\DataSourceException($e->getMessage());
         }
     }
 
@@ -187,7 +187,7 @@ class DatabaseSource implements IDataSource
      * @param int $parentId
      * @param array $replacement
      * @return int
-     * @throws Exceptions\DatabaseSourceException
+     * @throws Exceptions\DataSourceException
      * @todo Recursive copy
      */
     public function copyNode($nodeId, $parentId, array $replacement = [], $recursive = TRUE)
@@ -213,7 +213,7 @@ class DatabaseSource implements IDataSource
             return $newId;
         } catch (\Exception $e) {
             $this->rollBack();
-            throw new Exceptions\DatabaseSourceException($e->getMessage());
+            throw new Exceptions\DataSourceException($e->getMessage());
         }
     }
 
@@ -221,7 +221,7 @@ class DatabaseSource implements IDataSource
     /**
      * Remove node.
      * @param int $id
-     * @throws Exceptions\DatabaseSourceException
+     * @throws Exceptions\DataSourceException
      */
     public function removeNode($id)
     {
@@ -232,7 +232,7 @@ class DatabaseSource implements IDataSource
         try {
             $this->getBaseTable()->where('id', $children)->delete();
         } catch (\Exception $e) {
-            throw new Exceptions\DatabaseSourceException($e->getMessage());
+            throw new Exceptions\DataSourceException($e->getMessage());
         }
     }
 

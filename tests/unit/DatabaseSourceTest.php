@@ -110,7 +110,7 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
     /** Test get unknown node. */
     public function testGetUnknownNode()
     {
-        $this->tester->expectException('Pehape\DataTree\Exceptions\DatabaseSourceException', function() {
+        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() {
             $this->source->getNode(-1);
         });
     }
@@ -139,7 +139,7 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
             'type' => 'group',
             'unvalid_column' => 'unvalid_column',
         ];
-        $this->tester->expectException('Pehape\DataTree\Exceptions\DatabaseSourceException', function() use ($insertNode) {
+        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() use ($insertNode) {
             $this->source->createNode(0, $insertNode);
         });
     }
@@ -164,7 +164,7 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
         $updateNode = [
             'unvalid_column' => 'unvalid_data',
         ];
-        $this->tester->expectException('Pehape\DataTree\Exceptions\DatabaseSourceException', function() use ($updateNode) {
+        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() use ($updateNode) {
             $this->source->updateNode(1, $updateNode);
         });
     }

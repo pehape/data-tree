@@ -54,7 +54,7 @@ class DataTree extends Application\UI\Control
     private $options = [];
 
     /** @var array List of default enabled plugins */
-    private $defaultPlugins = ['contextmenu', 'types', 'dnd'];
+    private $defaultPlugins = ['search', 'contextmenu', 'types', 'dnd'];
 
     /** @var array List of enabled plugins */
     private $plugins;
@@ -400,7 +400,7 @@ class DataTree extends Application\UI\Control
                 'name' => $parameters->text,
                 'type' => $parameters->type,
             ]);
-        } catch (Exceptions\DatabaseSourceException $e) {
+        } catch (Exceptions\DataSourceException $e) {
             $this->sendErrorResponse([]);
         }
 
@@ -417,7 +417,7 @@ class DataTree extends Application\UI\Control
     {
         try {
             $this->dataSource->updateNode($parameters->id, ['name' => $parameters->text]);
-        } catch (Exceptions\DatabaseSourceException $e) {
+        } catch (Exceptions\DataSourceException $e) {
             $this->sendErrorResponse([]);
         }
 
@@ -434,7 +434,7 @@ class DataTree extends Application\UI\Control
     {
         try {
             $this->dataSource->moveNode($parameters->id, $parameters->parent);
-        } catch (Exceptions\DatabaseSourceException $e) {
+        } catch (Exceptions\DataSourceException $e) {
             $this->sendErrorResponse([]);
         }
 
@@ -451,7 +451,7 @@ class DataTree extends Application\UI\Control
     {
         try {
             $nodeId = $this->dataSource->copyNode($parameters->id, $parameters->parent);
-        } catch (Exceptions\DatabaseSourceException $e) {
+        } catch (Exceptions\DataSourceException $e) {
             $this->sendErrorResponse([]);
         }
 
@@ -468,7 +468,7 @@ class DataTree extends Application\UI\Control
     {
         try {
             $this->dataSource->removeNode($parameters->id);
-        } catch (Exceptions\DatabaseSourceException $e) {
+        } catch (Exceptions\DataSourceException $e) {
             $this->sendErrorResponse([]);
         }
 
