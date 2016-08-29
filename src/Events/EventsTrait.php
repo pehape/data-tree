@@ -7,6 +7,11 @@
 
 namespace Pehape\DataTree\Events;
 
+use Nette\Utils;
+use Pehape\DataTree\Components\DataTree;
+use Pehape\DataTree\Exceptions;
+
+
 /**
  * EventsTrait.
  *
@@ -38,5 +43,119 @@ trait EventsTrait
 
     /** @var callable[] function (DataTree $tree, array $parameters); Occurs when a tree is completely loaded */
     public $onLoaded = [];
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onLoadNodesCallback(DataTree $tree)
+    {
+        $nodes = $this->dataSource->getNodes();
+        $mappedData = $this->dataMapper->applyMapping($nodes);
+        $tree->sendResponse($mappedData);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onSelectNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
+    {
+        $node = $this->dataSource->getNode($parameters->id);
+        $tree->sendResponse($node->toArray());
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onCreateNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
+    {
+        try {
+            $nodeId = $this->dataSource->createNode($parameters->id, [
+                'name' => $parameters->text,
+                'type' => $parameters->type,
+            ]);
+        } catch (Exceptions\DataSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse(['id' => $nodeId]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onRenameNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
+    {
+        try {
+            $this->dataSource->updateNode($parameters->id, ['name' => $parameters->text]);
+        } catch (Exceptions\DataSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse([]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onMoveNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
+    {
+        try {
+            $this->dataSource->moveNode($parameters->id, $parameters->parent);
+        } catch (Exceptions\DataSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse([]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onCopyNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
+    {
+        try {
+            $nodeId = $this->dataSource->copyNode($parameters->id, $parameters->parent);
+        } catch (Exceptions\DataSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse(['id' => $nodeId]);
+    }
+
+
+    /**
+     * @internal
+     * @param DataTree $tree
+     * @param array $parameters
+     */
+    public function onDeleteNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
+    {
+        try {
+            $this->dataSource->removeNode($parameters->id);
+        } catch (Exceptions\DataSourceException $e) {
+            $this->sendErrorResponse([]);
+        }
+
+        $this->sendSuccessResponse([]);
+    }
+
 
 }
