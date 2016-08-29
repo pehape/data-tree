@@ -29,11 +29,13 @@
                     {/foreach}
                 },
                 {/ifset}
-                plugins: [{foreach $plugins as $plugin}{$plugin},{/foreach}]
+                plugins: [{foreach $plugins as $plugin}{$plugin},{/foreach}],
+                datatree: new $.datatree({$options->elementId}),
             })
             .on('create_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = $.datatree.fireCallback(
+                var datatree = tree.settings.datatree;
+                var callback = datatree.fireCallback(
                     {link callback!, onCreateNode},
                     {'id': data.node.parent, 'text': data.node.text, 'type': data.node.type},
                     {$controlName},
@@ -53,7 +55,8 @@
             })
             .on('rename_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = $.datatree.fireCallback(
+                var datatree = tree.settings.datatree;
+                var callback = datatree.fireCallback(
                     {link callback!, onRenameNode},
                     {'id': data.node.id, 'text': data.node.text, 'type': data.node.type},
                     {$controlName},
@@ -73,7 +76,8 @@
             })
             .on('move_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = $.datatree.fireCallback(
+                var datatree = tree.settings.datatree;
+                var callback = datatree.fireCallback(
                     {link callback!, onMoveNode},
                     {'id': data.node.id, 'parent': data.parent, 'type': data.node.type},
                     {$controlName},
@@ -93,7 +97,8 @@
             })
             .on('select_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = $.datatree.fireCallback(
+                var datatree = tree.settings.datatree;
+                var callback = datatree.fireCallback(
                     {link callback!, onSelectNode},
                     {'id': data.node.id, 'type': data.node.type},
                     {$controlName},
@@ -106,7 +111,8 @@
             })
             .on('delete_node.jstree', function (e, data) {
                 var tree = data.instance;
-                var callback = $.datatree.fireCallback(
+                var datatree = tree.settings.datatree;
+                var callback = datatree.fireCallback(
                     {link callback!, onDeleteNode},
                     {'id': data.node.id, 'nodes': data.node.children_d, 'type': data.node.type},
                     {$controlName},
@@ -130,7 +136,8 @@
                 }
 
                 var tree = data.instance;
-                var callback = $.datatree.fireCallback(
+                var datatree = tree.settings.datatree;
+                var callback = datatree.fireCallback(
                     {link callback!, onCopyNode},
                     {'id': data.node[0].id, 'parent': data.parent, 'type': data.node[0].type},
                     {$controlName},
@@ -154,7 +161,7 @@
                     tree.open_all();
                 {/if}
             });
-
+            
     {if $isAjax === FALSE}
     });
     {/if}

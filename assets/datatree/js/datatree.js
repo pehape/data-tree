@@ -11,7 +11,9 @@
         return console.error('datatree.js: jsTree is missing, load it please');
     }
 
-    var datatree = function () {
+    var datatree = function (id) {
+        
+        var treeId = id;
         
         this.prefixParameters = function (parameters, prefix, joinPrefix) {
             var prefixedParameters = {};
@@ -39,8 +41,13 @@
             var callback = $.post(url, parameters);
             callback.always(function (response) {
                 if (typeof response.snippets == 'object') {
+                    // Nette snippets
                     $.nette.ext('snippets').updateSnippets(response.snippets);
                     $.nette.load();
+                }
+                
+                if (typeof response.selectedNodes == 'object') {
+                    $('#' + treeId).jstree(true).select_node(response.selectedNodes);
                 }
             });
             return callback;
@@ -54,6 +61,6 @@
         
     };
 
-    $.datatree = new ($.extend(datatree, $.datatree ? $.datatree : {}));
+    $.datatree = datatree;
 
 })(window, window.jQuery);
