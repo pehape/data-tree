@@ -7,12 +7,9 @@
 
 namespace Pehape\DataTree\Components;
 
-use Nette\Application\IPresenter;
-use Nette\Application\Responses;
-use Nette\Application\UI;
+use Nette\Application;
 use Nette\Localization;
-use Nette\Utils\Arrays;
-use Nette\Utils\ArrayHash;
+use Nette\Utils;
 use Pehape\DataTree\Events;
 use Pehape\DataTree\Exceptions;
 use Pehape\DataTree\Mappers;
@@ -25,7 +22,7 @@ use Pehape\DataTree\Localization\Untranslation;
  *
  * @author Tomas Rathouz <trathouz at gmail.com>
  */
-class DataTree extends UI\Control
+class DataTree extends Application\UI\Control
 {
 
     /** @var Sources\IDataSource */
@@ -37,10 +34,10 @@ class DataTree extends UI\Control
     /** @var Localization\ITranslator */
     private $translator;
 
-    /** @var UI\ITemplate */
+    /** @var Application\UI\ITemplate */
     private $templatePath;
 
-    /** @var IPresenter */
+    /** @var Application\IPresenter */
     private $presenter = NULL;
 
     /** @var string */
@@ -94,7 +91,7 @@ class DataTree extends UI\Control
 
         $this->dataMapper = $dataMapper;
         $this->translator = $translator;
-        $this->options = Arrays::mergeTree($this->options, $this->defaultOptions);
+        $this->options = Utils\Arrays::mergeTree($this->options, $this->defaultOptions);
         $this->plugins = $this->defaultPlugins;
     }
 
@@ -111,7 +108,7 @@ class DataTree extends UI\Control
         $this->template->setTranslator($this->translator);
         $this->template->controlName = $this->getControlPath();
         $this->template->plugins = $this->plugins;
-        $this->template->options = ArrayHash::from($this->options);
+        $this->template->options = Utils\ArrayHash::from($this->options);
         $this->template->isAjax = $this->presenter->isAjax();
         $this->template->render();
     }
@@ -124,7 +121,7 @@ class DataTree extends UI\Control
     public function handleCallback($callback)
     {
         $parameters = $this->processParameters($this->getParameters());
-        if (empty($this->$callback) === TRUE) {
+        if (is_array($this->$callback) && count($this->$callback) === 0) {
             $defaultCallback = $callback . 'Callback';
             $this->$defaultCallback($this, $parameters);
         } else {
@@ -136,7 +133,7 @@ class DataTree extends UI\Control
     /**
      * Process parameters before sending them to callbacks.
      * @param array $parameters
-     * @return ArrayHash
+     * @return Utils\ArrayHash
      */
     private function processParameters(array $parameters)
     {
@@ -155,7 +152,7 @@ class DataTree extends UI\Control
                 $processedParameters[$key] = $value;
             }
         }
-        return ArrayHash::from($processedParameters);
+        return Utils\ArrayHash::from($processedParameters);
     }
 
 
@@ -203,7 +200,7 @@ class DataTree extends UI\Control
             $responseData = $data;
         }
 
-        $jsonResponse = new Responses\JsonResponse($responseData);
+        $jsonResponse = new Application\Responses\JsonResponse($responseData);
         $this->presenter->sendResponse($jsonResponse);
     }
 
@@ -278,7 +275,7 @@ class DataTree extends UI\Control
      */
     public function setOptions(array $options)
     {
-        $this->options = Arrays::mergeTree($options, $this->options);
+        $this->options = Utils\Arrays::mergeTree($options, $this->options);
         return $this;
     }
 
@@ -303,7 +300,7 @@ class DataTree extends UI\Control
     public function setOption($name, $value)
     {
         if (is_array($value) === TRUE && array_key_exists($name, $this->options) === TRUE) {
-            $this->options[$name] = Arrays::mergeTree($value, $this->options[$name]);
+            $this->options[$name] = Utils\Arrays::mergeTree($value, $this->options[$name]);
         } else {
             $this->options[$name] = $value;
         }
@@ -346,30 +343,16 @@ class DataTree extends UI\Control
     }
 
 
-    /** @return UI\ITemplate */
-    public function getDefaultTemplate()
+    /** @return string */
+    public function getTemplatePath()
     {
         return $this->templatePath;
     }
 
 
-    /** @return UI\ITemplate */
-    public function getInteractionTemplate()
-    {
-        return $this->interactionTemplate;
-    }
-
-
-    /** @return UI\ITemplate */
-    public function getThemeTemplate()
-    {
-        return $this->themeTemplate;
-    }
-
-
     /**
      * Set custom template path.
-     * @param UI\ITemplate $templatePath
+     * @param string $templatePath
      * @return DataTree
      */
     public function setTemplatePath($templatePath)
@@ -397,7 +380,7 @@ class DataTree extends UI\Control
      * @param DataTree $tree
      * @param array $parameters
      */
-    public function onSelectNodeCallback(DataTree $tree, ArrayHash $parameters)
+    public function onSelectNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
     {
         $node = $this->dataSource->getNode($parameters->id);
         $tree->sendResponse($node->toArray());
@@ -409,7 +392,7 @@ class DataTree extends UI\Control
      * @param DataTree $tree
      * @param array $parameters
      */
-    public function onCreateNodeCallback(DataTree $tree, ArrayHash $parameters)
+    public function onCreateNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
     {
         try {
             $nodeId = $this->dataSource->createNode($parameters->id, [
@@ -429,7 +412,7 @@ class DataTree extends UI\Control
      * @param DataTree $tree
      * @param array $parameters
      */
-    public function onRenameNodeCallback(DataTree $tree, ArrayHash $parameters)
+    public function onRenameNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
     {
         try {
             $this->dataSource->updateNode($parameters->id, ['name' => $parameters->text]);
@@ -446,7 +429,7 @@ class DataTree extends UI\Control
      * @param DataTree $tree
      * @param array $parameters
      */
-    public function onMoveNodeCallback(DataTree $tree, ArrayHash $parameters)
+    public function onMoveNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
     {
         try {
             $this->dataSource->moveNode($parameters->id, $parameters->parent);
@@ -463,7 +446,7 @@ class DataTree extends UI\Control
      * @param DataTree $tree
      * @param array $parameters
      */
-    public function onCopyNodeCallback(DataTree $tree, ArrayHash $parameters)
+    public function onCopyNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
     {
         try {
             $nodeId = $this->dataSource->copyNode($parameters->id, $parameters->parent);
@@ -480,7 +463,7 @@ class DataTree extends UI\Control
      * @param DataTree $tree
      * @param array $parameters
      */
-    public function onDeleteNodeCallback(DataTree $tree, ArrayHash $parameters)
+    public function onDeleteNodeCallback(DataTree $tree, Utils\ArrayHash $parameters)
     {
         try {
             $this->dataSource->removeNode($parameters->id);
