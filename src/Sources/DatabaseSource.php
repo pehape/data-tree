@@ -209,6 +209,17 @@ class DatabaseSource implements IDataSource
             }
 
             $newId = $this->createNode($parentId, $data);
+            if ($recursive === TRUE) {
+                $nodeChildren = $this->getChildrenFrom($nodeId, FALSE);
+                foreach ($nodeChildren as $nodeChild) {
+                    if ($nodeChild->depth !== 1) {
+                        continue;
+                    }
+
+                    $this->copyNode($nodeChild->id, $newId, $replacement, TRUE);
+                }
+            }
+
             $this->commit();
             return $newId;
         } catch (\Exception $e) {
