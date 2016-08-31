@@ -122,7 +122,7 @@ class DataTree extends Application\UI\Control
     public function handleCallback($callback)
     {
         $parameters = $this->processParameters($this->getParameters());
-        if (is_array($this->$callback) && count($this->$callback) === 0) {
+        if (count($this->$callback) === 0) {
             $defaultCallback = $callback . 'Callback';
             $this->$defaultCallback($this, $parameters);
         } else {
