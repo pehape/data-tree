@@ -278,19 +278,25 @@ class DatabaseSource implements IDataSource
      * Get parents of node.
      * @param int $id
      * @param bool $self
+     * @param int $limit
      * @return array
      */
-    public function getParentsFrom($id, $self = TRUE)
+    public function getParentsFrom($id, $self = TRUE, $limit = NULL)
     {
-        if ($self === TRUE) {
-            return $this->db->query('SELECT c.*, depth FROM ' . $this->getBaseTableName() . ' c
-                JOIN ' . $this->getClosureTableName() . ' cc ON (c.id = cc.ancestor)
-                WHERE cc.descendant = ? ORDER BY depth ASC', $id)->fetchAll();
-        } else {
-            return $this->db->query('SELECT c.*, depth FROM ' . $this->getBaseTableName() . ' c
-                JOIN ' . $this->getClosureTableName() . ' cc ON (c.id = cc.ancestor)
-                WHERE cc.descendant = ?  AND depth > ? ORDER BY depth ASC', $id, 0)->fetchAll();
+        $selection = $this->getBaseTable()
+            ->select($this->baseTableName . '.*, depth')
+            ->where(':' . $this->closureTableName . '.descendant', $id)
+            ->order('depth', 'ASC');
+
+        if ($self === FALSE) {
+            $selection->where('depth > ?', 0);
         }
+
+        if (is_int($limit) === TRUE) {
+            $selection->limit($limit);
+        }
+
+        return $selection->fetchAll();
     }
 
 
