@@ -18,18 +18,10 @@
                         url : {link callback!, onLoadNodes}
                     }
                 },
-                {ifset $options['types']}
-                types: {
-                    {foreach $options['types'] as $typeKey => $typeDefinition}
-                        {$typeKey}: {
-                            {foreach $typeDefinition as $definitionKey => $definitionValue}
-                                {$definitionKey}: {$definitionValue},
-                            {/foreach}
-                        },
-                    {/foreach}
-                },
-                {/ifset}
-                plugins: [{foreach $plugins as $plugin}{$plugin},{/foreach}],
+                {foreach $innerPlugins as $innerPlugin}
+                    {control $innerPlugin}
+                {/foreach}
+                plugins: [{foreach $plugins as $plugin}{$plugin->getShortName()}{sep},{/sep}{/foreach}],
                 datatree: new $.datatree({$options->elementId}),
             })
             .on('create_node.jstree', function (e, data) {

@@ -58,4 +58,8 @@ class UnvalidDataMappingException extends \RuntimeException
 
 }
 
+class MissingPluginClassException extends \RuntimeException {}
+
+class UnvalidPluginClassException extends \RuntimeException {}
+
 // @codingStandardsIgnoreEnd

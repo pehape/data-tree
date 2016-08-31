@@ -13,6 +13,7 @@ use Nette\Utils;
 use Pehape\DataTree\Events;
 use Pehape\DataTree\Exceptions;
 use Pehape\DataTree\Mappers;
+use Pehape\DataTree\Plugins;
 use Pehape\DataTree\Sources;
 use Pehape\DataTree\Localization\Untranslation;
 
@@ -53,11 +54,12 @@ class DataTree extends Application\UI\Control
     /** @var array */
     private $options = [];
 
-    /** @var array List of default enabled plugins */
-    private $defaultPlugins = ['search', 'contextmenu', 'types', 'dnd'];
-
-    /** @var array List of enabled plugins */
-    private $plugins;
+    /** @var array List of default plugins */
+    private $defaultPlugins = [
+        'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
+        'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
+        'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
+    ];
 
     /** Events. */
     use Events\EventsTrait;
@@ -93,7 +95,6 @@ class DataTree extends Application\UI\Control
         $this->dataMapper = $dataMapper;
         $this->translator = $translator;
         $this->options = Utils\Arrays::mergeTree($this->options, $this->defaultOptions);
-        $this->plugins = $this->defaultPlugins;
     }
 
 
@@ -108,7 +109,9 @@ class DataTree extends Application\UI\Control
 
         $this->template->setTranslator($this->translator);
         $this->template->controlName = $this->getControlPath();
-        $this->template->plugins = $this->plugins;
+        $this->template->innerPlugins = $this->getPlugins(Plugins\BasePlugin::SCOPE_INNER);
+        $this->template->outerPlugins = $this->getPlugins(Plugins\BasePlugin::SCOPE_OUTER);
+        $this->template->plugins = array_merge($this->template->innerPlugins, $this->template->outerPlugins);
         $this->template->options = Utils\ArrayHash::from($this->options);
         $this->template->isAjax = $this->presenter->isAjax();
         $this->template->render();
@@ -311,36 +314,48 @@ class DataTree extends Application\UI\Control
 
 
     /**
-     * Set enabled plugins.
-     * @param array $plugins
-     * @return DataTree
+     * Add plugin
+     * @param string $name
+     * @param Plugins\IPlugin|NULL
+     * @param int $scope
+     * @return IPlugin
      */
-    public function setEnabledPlugins(array $plugins)
+    public function addPlugin($name, $class = NULL, $scope = Plugins\BasePlugin::SCOPE_INNER)
     {
-        $this->plugins = $plugins;
-        return $this;
+        if ($class === NULL) {
+            if (array_key_exists($name, $this->defaultPlugins) === FALSE) {
+                throw new Exceptions\MissingPluginClassException();
+            }
+
+            $class = new $this->defaultPlugins[$name];
+            $scope = Plugins\BasePlugin::SCOPE_INNER;
+        } elseif (($class instanceof Plugins\IPlugin) === FALSE) {
+            throw new Exception\UnvalidPluginClassException();
+        }
+
+        $class->setScope($scope);
+        $this[Plugins\BasePlugin::PREFIX . $name] = $class;
+
+        return $class;
     }
 
 
     /**
-     * Enable plugin.
-     * @param string $plugin
-     * @return DataTree
+     * Get plugins.
+     * @param int|NULL $scope
+     * @return array
      */
-    public function enablePlugin($plugin)
+    public function getPlugins($scope = NULL)
     {
-        if (in_array($plugin, $this->plugins) === FALSE) {
-            $this->plugins[] = $plugin;
-        }
+        $plugins = array_filter((array) $this->getComponents(), function ($component) use ($scope) {
+            if ($scope !== NULL) {
+                return (substr($component->name, 0, strlen(Plugins\BasePlugin::PREFIX)) === Plugins\BasePlugin::PREFIX && $component->getScope() === $scope);
+            } else {
+                return (substr($component->name, 0, strlen(Plugins\BasePlugin::PREFIX)) === Plugins\BasePlugin::PREFIX);
+            }
+        });
 
-        return $this;
-    }
-
-
-    /** @return @array */
-    public function getEnabledPlugins()
-    {
-        return $this->plugins;
+        return $plugins;
     }
 
 
