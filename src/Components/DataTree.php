@@ -222,7 +222,7 @@ class DataTree extends Application\UI\Control
      */
     public function sendErrorResponse(array $data)
     {
-        $this->sendResponse($data, self::RESPONSE_SUCCESS);
+        $this->sendResponse($data, self::RESPONSE_ERROR);
     }
 
 
