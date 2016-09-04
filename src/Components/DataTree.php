@@ -59,6 +59,7 @@ class DataTree extends Application\UI\Control
         'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
         'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
         'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
+        'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
     ];
 
     /** Events. */
