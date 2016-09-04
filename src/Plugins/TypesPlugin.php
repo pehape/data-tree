@@ -59,7 +59,7 @@ class TypesPlugin extends BasePlugin
      */
     private function printType($name, array $content)
     {
-        echo $name . ': {' . PHP_EOL;
+        echo '\'' . $name . '\': {' . PHP_EOL;
         echo 'icon: \'' . $content['icon'] . '\'' . PHP_EOL;
         echo '},' . PHP_EOL;
     }
