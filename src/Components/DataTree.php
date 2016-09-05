@@ -76,6 +76,15 @@ class DataTree extends Application\UI\Control
         'paste' => '\Pehape\DataTree\Events\PasteNodeEvent',
     ];
 
+    /** @var array List of default selected nodes. */
+    private $selectedNodes = [];
+
+    /** @var array List of default opened nodes. */
+    private $openedNodes = [];
+
+    /** @var array List of default disabled nodes. */
+    private $disabledNodes = [];
+
     /** State constants. */
     const STATE_OPEN = 1;
     const STATE_CLOSED = 0;
@@ -377,6 +386,7 @@ class DataTree extends Application\UI\Control
         }
     }
 
+
     /**
      * Add event.
      * @param string $name
@@ -481,6 +491,60 @@ class DataTree extends Application\UI\Control
     {
         parent::attached($presenter);
         $this->presenter = $this->lookup('Nette\Application\IPresenter');
+    }
+
+
+    /** @return array */
+    public function getSelectedNodes()
+    {
+        return $this->selectedNodes;
+    }
+
+
+    /** @return array */
+    public function getOpenedNodes()
+    {
+        return $this->openedNodes;
+    }
+
+
+    /** @return array */
+    public function getDisabledNodes()
+    {
+        return $this->disabledNodes;
+    }
+
+
+    /**
+     * @param array $selectedNodes
+     * @return DataTree
+     */
+    public function setSelectedNodes(array $selectedNodes)
+    {
+        $this->selectedNodes = $selectedNodes;
+        return $this;
+    }
+
+
+    /**
+     * @param array $openedNodes
+     * @return DataTree
+     */
+    public function setOpenedNodes(array $openedNodes)
+    {
+        $this->openedNodes = $openedNodes;
+        return $this;
+    }
+
+
+    /**
+     * @param array $disabledNodes
+     * @return DataTree
+     */
+    public function setDisabledNodes(array $disabledNodes)
+    {
+        $this->disabledNodes = $disabledNodes;
+        return $this;
     }
 
 

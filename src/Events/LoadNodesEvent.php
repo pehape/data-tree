@@ -38,6 +38,22 @@ class LoadNodesEvent extends BaseEvent
         return function (DataTree $tree) {
             $nodes = $tree->getDataSource()->getNodes();
             $mappedData = $tree->getDataMapper()->applyMapping($nodes);
+
+            array_walk($mappedData, function (& $item) use ($tree) {
+
+                if (in_array($item['id'], $tree->getSelectedNodes()) === TRUE) {
+                    $item['state']['selected'] = TRUE;
+                }
+
+                if (in_array($item['id'], $tree->getOpenedNodes()) === TRUE) {
+                    $item['state']['opened'] = TRUE;
+                }
+
+                if (in_array($item['id'], $tree->getDisabledNodes()) === TRUE) {
+                    $item['state']['disabled'] = TRUE;
+                }
+            });
+
             $tree->sendResponse($mappedData);
         };
     }
