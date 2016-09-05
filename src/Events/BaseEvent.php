@@ -34,7 +34,7 @@ abstract class BaseEvent extends UI\Control implements IEvent
     protected $callback;
 
     /** @var string */
-    protected $side;
+    protected $side = self::SIDE_CLIENT;
 
     /** @var array */
     protected $parameters = [];
@@ -48,6 +48,7 @@ abstract class BaseEvent extends UI\Control implements IEvent
     public function render()
     {
         $template = $this->template->setFile(__DIR__ . '/templates/event.latte');
+        $template->side = $this->getSide();
         $template->eventRealname = $this->getRealname() . self::SUFFIX;
         $template->eventCallback = $this->getParent()->link('callback', [$this->getRealname()]);
         $template->parametersString = $this->getParametersString();
@@ -115,6 +116,19 @@ abstract class BaseEvent extends UI\Control implements IEvent
         $parametersString = rtrim($parametersString, ',') . '}';
         return $parametersString;
     }
+
+    public function getSide()
+    {
+        return $this->side;
+    }
+
+
+    public function setSide($side)
+    {
+        $this->side = $side;
+        return $this;
+    }
+
 
 
 }

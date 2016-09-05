@@ -30,7 +30,7 @@ class SelectNodeEvent extends BaseEvent
     {
         parent::__construct();
         $this->refreshOnSuccess = FALSE;
-        $this->callback = [$this, 'getDefaultCallback'];
+        $this->callback = $this->getDefaultCallback();
     }
 
     public function getDefaultCallback()

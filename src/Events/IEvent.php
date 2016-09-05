@@ -28,6 +28,10 @@ interface IEvent
     public function getType();
 
 
+    /** @return string */
+    public function getSide();
+
+
     /**
      * Get name of real jstree event.
      * @return string

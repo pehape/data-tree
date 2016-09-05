@@ -9,6 +9,7 @@ namespace Pehape\DataTree\Events;
 
 use Pehape\DataTree\Components\DataTree;
 
+
 /**
  * LoadNodesEvent.
  *
@@ -17,17 +18,19 @@ use Pehape\DataTree\Components\DataTree;
 class LoadNodesEvent extends BaseEvent
 {
 
+
     /** Constructor. */
     public function __construct()
     {
         parent::__construct();
         $this->type = self::TYPE_LOAD;
-        $this->callback = [$this, 'getDefaultCallback'];
+        $this->callback = $this->getDefaultCallback();
     }
 
 
     public function render()
     {
+        
     }
 
 
@@ -39,5 +42,6 @@ class LoadNodesEvent extends BaseEvent
             $tree->sendResponse($mappedData);
         };
     }
+
 
 }

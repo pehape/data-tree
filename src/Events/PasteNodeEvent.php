@@ -29,7 +29,7 @@ class PasteNodeEvent extends BaseEvent
     public function __construct()
     {
         parent::__construct();
-        $this->callback = [$this, 'getDefaultCallback'];
+        $this->callback = $this->getDefaultCallback();
     }
 
     public function getDefaultCallback()
