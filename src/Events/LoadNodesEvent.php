@@ -30,7 +30,6 @@ class LoadNodesEvent extends BaseEvent
 
     public function render()
     {
-        
     }
 
 

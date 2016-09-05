@@ -1,4 +1,5 @@
 
+{if $side === \Pehape\DataTree\Events\BaseEvent::SIDE_SERVER}
 .on('{$eventRealname}', function (e, data) {
     var tree = data.instance;
     var datatree = tree.settings.datatree;
@@ -24,3 +25,4 @@
     });
     {/if}
 })
+{/if}

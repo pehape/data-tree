@@ -35,6 +35,7 @@ class CreateNodeEvent extends BaseEvent
     public function render()
     {
         $template = $this->template->setFile(__DIR__ . '/templates/create.latte');
+        $template->side = $this->getSide();
         $template->eventRealname = $this->getRealname() . self::SUFFIX;
         $template->eventCallback = $this->getParent()->link('callback', [$this->getRealname()]);
         $template->parametersString = $this->getParametersString();
