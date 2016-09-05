@@ -62,4 +62,8 @@ class MissingPluginClassException extends \RuntimeException {}
 
 class UnvalidPluginClassException extends \RuntimeException {}
 
+class MissingEventClassException extends \RuntimeException {}
+
+class UnvalidEventClassException extends \RuntimeException {}
+
 // @codingStandardsIgnoreEnd

@@ -41,6 +41,9 @@ class DataTree extends Application\UI\Control
     /** @var Application\IPresenter */
     private $presenter = NULL;
 
+    /** @var array */
+    private $events = [];
+
     /** @var string */
     private $defaultOptions = [
         'elementType' => 'div',
@@ -62,8 +65,16 @@ class DataTree extends Application\UI\Control
         'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
     ];
 
-    /** Events. */
-    use Events\EventsTrait;
+    /** @var array List of default events */
+    private $defaultEvents = [
+        'load_nodes' => '\Pehape\DataTree\Events\LoadNodesEvent',
+        'select_node' => '\Pehape\DataTree\Events\SelectNodeEvent',
+        'create_node' => '\Pehape\DataTree\Events\CreateNodeEvent',
+        'rename_node' => '\Pehape\DataTree\Events\RenameNodeEvent',
+        'delete_node' => '\Pehape\DataTree\Events\DeleteNodeEvent',
+        'move_node' => '\Pehape\DataTree\Events\MoveNodeEvent',
+        'paste' => '\Pehape\DataTree\Events\PasteNodeEvent',
+    ];
 
     /** State constants. */
     const STATE_OPEN = 1;
@@ -96,6 +107,7 @@ class DataTree extends Application\UI\Control
         $this->dataMapper = $dataMapper;
         $this->translator = $translator;
         $this->options = Utils\Arrays::mergeTree($this->options, $this->defaultOptions);
+        $this->registerDefaultEvents();
     }
 
 
@@ -113,6 +125,8 @@ class DataTree extends Application\UI\Control
         $this->template->innerPlugins = $this->getPlugins(Plugins\BasePlugin::SCOPE_INNER);
         $this->template->outerPlugins = $this->getPlugins(Plugins\BasePlugin::SCOPE_OUTER);
         $this->template->plugins = array_merge($this->template->innerPlugins, $this->template->outerPlugins);
+        $this->template->events = $this->getEvents(Events\BaseEvent::TYPE_NODE);
+        $this->template->loadDataCallback = $this->getLoadNodesEventName();
         $this->template->options = Utils\ArrayHash::from($this->options);
         $this->template->isAjax = $this->presenter->isAjax();
         $this->template->render();
@@ -125,13 +139,9 @@ class DataTree extends Application\UI\Control
      */
     public function handleCallback($callback)
     {
+        $eventCallback = $this->getEvent($callback)->getCallback();
         $parameters = $this->processParameters($this->getParameters());
-        if (count($this->$callback) === 0) {
-            $defaultCallback = $callback . 'Callback';
-            $this->$defaultCallback($this, $parameters);
-        } else {
-            $this->$callback($this, $parameters);
-        }
+        Utils\Callback::invoke($eventCallback, $this, $parameters);
     }
 
 
@@ -360,6 +370,75 @@ class DataTree extends Application\UI\Control
     }
 
 
+    private function registerDefaultEvents()
+    {
+        foreach ($this->defaultEvents as $eventName => $eventClass) {
+            $this->addEvent($eventName, new $eventClass);
+        }
+    }
+
+    /**
+     * Add event.
+     * @param string $name
+     * @param Events\IEvent|NULL
+     * @return IEvent
+     */
+    public function addEvent($name, $class)
+    {
+        if ($class === NULL) {
+            if (array_key_exists($name, $this->defaultEvents) === FALSE) {
+                throw new Exceptions\MissingEventClassException();
+            }
+
+            $class = new $this->defaultEvents[$name];
+        } elseif (($class instanceof Events\IEvent) === FALSE) {
+            throw new Exceptions\UnvalidEventClassException();
+        }
+
+        $this[Events\BaseEvent::PREFIX . $name] = $class;
+
+        return $class;
+    }
+
+
+    /** @return Plugins\IPlugin */
+    public function getEvent($name)
+    {
+        return $this->getComponent(Events\BaseEvent::PREFIX . $name);
+    }
+
+
+    /**
+     * Get events.
+     * @param int|NULL $type
+     * @return array
+     */
+    public function getEvents($type = NULL)
+    {
+        $events = array_filter((array) $this->getComponents(), function ($component) use ($type) {
+            if ($type !== NULL) {
+                return (substr($component->name, 0, strlen(Events\BaseEvent::PREFIX)) === Events\BaseEvent::PREFIX && $component->getType() === $type);
+            } else {
+                return (substr($component->name, 0, strlen(Events\BaseEvent::PREFIX)) === Events\BaseEvent::PREFIX);
+            }
+        });
+
+        return $events;
+    }
+
+
+    /**
+     * Get name of event with type LOAD.
+     * @return string
+     */
+    private function getLoadNodesEventName()
+    {
+        $events = $this->getEvents(Events\BaseEvent::TYPE_LOAD);
+        $event = array_pop($events);
+        return substr($event->name, strlen(Events\BaseEvent::PREFIX));
+    }
+
+
     /** @return string */
     public function getTemplatePath()
     {
@@ -380,10 +459,11 @@ class DataTree extends Application\UI\Control
 
 
     /**
+     * @internal
      * Get component name path.
      * @return string
      */
-    private function getControlPath()
+    public function getControlPath()
     {
         $names = [$this->name];
         $parent = $this;

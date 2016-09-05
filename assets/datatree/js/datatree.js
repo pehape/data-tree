@@ -30,7 +30,7 @@
         this.fireCallback = function (url, parameters, controlName, joinTree) {
             var parameters = this.prefixParameters(parameters, controlName);
             
-            if (joinTree !== null) {
+            if (joinTree != 'null') {
                 var joinedTreeParameters = this.getJoinedTreeParameters(joinTree);
                 var prefixedJoinedTreeParameters = this.prefixParameters(joinedTreeParameters, controlName, joinTree);
                 $.each(prefixedJoinedTreeParameters, function (key, value) {

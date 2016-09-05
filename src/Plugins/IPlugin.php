@@ -8,7 +8,7 @@
 namespace Pehape\DataTree\Plugins;
 
 /**
- * TypesPlugin.
+ * IPlugin.
  *
  * @author Tomas Rathouz <trathouz at gmail.com>
  */

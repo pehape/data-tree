@@ -1,0 +1,26 @@
+
+.on('{$eventRealname}', function (e, data) {
+    var tree = data.instance;
+    var datatree = tree.settings.datatree;
+    var callback = datatree.fireCallback(
+        '{$eventCallback|noescape}',
+        {$parametersString},
+        '{$controlName}',
+        '{$joinTree}');
+
+    {if $refreshOnSuccess}
+    callback.done(function (response) {
+        if (response.type === 'success') {
+            tree.refresh(data.node);
+        } else {
+            tree.refresh(data.node);
+        }
+    });
+    {/if}
+    
+    {if $refreshOnError}
+    callback.fail(function () {
+        tree.refresh(data.node);
+    });
+    {/if}
+})

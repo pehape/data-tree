@@ -15,7 +15,7 @@
                     },
                     {/ifset}
                     data: {
-                        url : {link callback!, onLoadNodes}
+                        url : {link callback!, $loadDataCallback}
                     }
                 },
                 {foreach $innerPlugins as $innerPlugin}
@@ -24,135 +24,9 @@
                 plugins: [{foreach $plugins as $plugin}{$plugin->getShortName()}{sep},{/sep}{/foreach}],
                 datatree: new $.datatree({$options->elementId}),
             })
-            .on('create_node.jstree', function (e, data) {
-                var tree = data.instance;
-                var datatree = tree.settings.datatree;
-                var callback = datatree.fireCallback(
-                    {link callback!, onCreateNode},
-                    {'id': data.node.parent, 'text': data.node.text, 'type': data.node.type},
-                    {$controlName},
-                    {$options['joinTree']});
-
-                callback.done(function (response) {
-                    if (response.type === 'success') {
-                        tree.set_id(data.node, response.data.id);
-                    } else {
-                        tree.refresh(data.node);
-                    }
-                });
-                callback.fail(function () {
-                    tree.refresh(data.node);
-                });
-
-            })
-            .on('rename_node.jstree', function (e, data) {
-                var tree = data.instance;
-                var datatree = tree.settings.datatree;
-                var callback = datatree.fireCallback(
-                    {link callback!, onRenameNode},
-                    {'id': data.node.id, 'text': data.node.text, 'type': data.node.type},
-                    {$controlName},
-                    {$options['joinTree']});
-
-                callback.done(function (response) {
-                    if (response.type === 'success') {
-                        tree.refresh(data.node);
-                    } else {
-                        tree.refresh(data.node);
-                    }
-                });
-                callback.fail(function () {
-                    tree.refresh(data.node);
-                });
-
-            })
-            .on('move_node.jstree', function (e, data) {
-                var tree = data.instance;
-                var datatree = tree.settings.datatree;
-                var callback = datatree.fireCallback(
-                    {link callback!, onMoveNode},
-                    {'id': data.node.id, 'parent': data.parent, 'type': data.node.type},
-                    {$controlName},
-                    {$options['joinTree']});
-
-                callback.done(function (response) {
-                    if (response.type === 'success') {
-                        tree.refresh(data.node);
-                    } else {
-                        tree.refresh(data.node);
-                    }
-                });
-                callback.fail(function () {
-                    tree.refresh(data.node);
-                });
-
-            })
-            .on('select_node.jstree', function (e, data) {
-                var tree = data.instance;
-                var datatree = tree.settings.datatree;
-                var callback = datatree.fireCallback(
-                    {link callback!, onSelectNode},
-                    {'id': data.node.id, 'type': data.node.type},
-                    {$controlName},
-                    {$options['joinTree']});
-
-                callback.fail(function () {
-                    tree.refresh(data.node);
-                });
-
-            })
-            .on('delete_node.jstree', function (e, data) {
-                var tree = data.instance;
-                var datatree = tree.settings.datatree;
-                var callback = datatree.fireCallback(
-                    {link callback!, onDeleteNode},
-                    {'id': data.node.id, 'nodes': data.node.children_d, 'type': data.node.type},
-                    {$controlName},
-                    {$options['joinTree']});
-
-                callback.done(function (response) {
-                    if (response.type === 'success') {
-                        tree.refresh(data.node);
-                    } else {
-                        tree.refresh(data.node);
-                    }
-                });
-                callback.fail(function () {
-                    tree.refresh(data.node);
-                });
-
-            })
-            .on('paste.jstree', function (e, data) {
-                if (data.mode !== 'copy_node') {
-                    return;
-                }
-
-                var tree = data.instance;
-                var datatree = tree.settings.datatree;
-                var callback = datatree.fireCallback(
-                    {link callback!, onCopyNode},
-                    {'id': data.node[0].id, 'parent': data.parent, 'type': data.node[0].type},
-                    {$controlName},
-                    {$options['joinTree']});
-
-                callback.done(function (response) {
-                    if (response.type === 'success') {
-                        tree.refresh(data.node);
-                    } else {
-                        tree.refresh(data.node);
-                    }
-                });
-                callback.fail(function () {
-                    tree.refresh(data.node);
-                });
-
-            })
-            .on('loaded.jstree', function (e, data) {
-                var tree = data.instance;
-                {if $options['defaultState'] === \Pehape\DataTree\Components\DataTree::STATE_OPEN}
-                    tree.open_all();
-                {/if}
-            });
+            {foreach $events as $event}
+                {control $event}
+            {/foreach}
             
     {if $isAjax === FALSE}
     });
