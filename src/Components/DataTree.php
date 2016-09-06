@@ -176,6 +176,8 @@ class DataTree extends Application\UI\Control
                 $processedParameters[$key] = $value;
             }
         }
+        
+        unset($parameters['callback']);
         return Utils\ArrayHash::from($processedParameters);
     }
 
