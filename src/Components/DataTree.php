@@ -104,7 +104,7 @@ class DataTree extends Application\UI\Control
     {
         parent::__construct();
 
-        $this->setDataSource($dataSource);
+        $this->setDataSource(clone $dataSource);
         if ($dataMapper === NULL) {
             $dataMapper = new Mappers\DatabaseMapper();
         }
