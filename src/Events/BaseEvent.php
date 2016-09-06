@@ -34,7 +34,7 @@ abstract class BaseEvent extends UI\Control implements IEvent
     protected $callback;
 
     /** @var string */
-    protected $side = self::SIDE_CLIENT;
+    protected $side = self::SIDE_SERVER;
 
     /** @var array */
     protected $parameters = [];
