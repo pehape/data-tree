@@ -12,10 +12,11 @@ use Nette\Localization;
 use Nette\Utils;
 use Pehape\DataTree\Events;
 use Pehape\DataTree\Exceptions;
+use Pehape\DataTree\Localization\Untranslation;
 use Pehape\DataTree\Mappers;
 use Pehape\DataTree\Plugins;
+use Pehape\DataTree\Rendering;
 use Pehape\DataTree\Sources;
-use Pehape\DataTree\Localization\Untranslation;
 
 
 /**
@@ -32,14 +33,11 @@ class DataTree extends Application\UI\Control
     /** @var Mappers\IDataMapper */
     private $dataMapper;
 
+    /** @var Rendering\IRenderer */
+    private $renderer;
+
     /** @var Localization\ITranslator */
     private $translator;
-
-    /** @var Application\UI\ITemplate */
-    private $templatePath;
-
-    /** @var Application\IPresenter */
-    private $presenter = NULL;
 
     /** @var array */
     private $events = [];
@@ -114,6 +112,7 @@ class DataTree extends Application\UI\Control
         }
 
         $this->dataMapper = $dataMapper;
+        $this->renderer = new Rendering\DefaultRenderer();
         $this->translator = $translator;
         $this->options = Utils\Arrays::mergeTree($this->options, $this->defaultOptions);
         $this->registerDefaultEvents();
@@ -123,22 +122,7 @@ class DataTree extends Application\UI\Control
     /** Render default template. */
     public function render()
     {
-        if ($this->templatePath !== NULL) {
-            $this->template->setFile($this->templatePath);
-        } else {
-            $this->template->setFile(__DIR__ . '/templates/default.latte');
-        }
-
-        $this->template->setTranslator($this->translator);
-        $this->template->controlName = $this->getControlPath();
-        $this->template->innerPlugins = $this->getPlugins(Plugins\BasePlugin::SCOPE_INNER);
-        $this->template->outerPlugins = $this->getPlugins(Plugins\BasePlugin::SCOPE_OUTER);
-        $this->template->plugins = array_merge($this->template->innerPlugins, $this->template->outerPlugins);
-        $this->template->events = $this->getEvents(Events\BaseEvent::TYPE_NODE);
-        $this->template->loadDataCallback = $this->getLoadNodesEventName();
-        $this->template->options = Utils\ArrayHash::from($this->options);
-        $this->template->isAjax = $this->presenter->isAjax();
-        $this->template->render();
+        $this->renderer->render($this);
     }
 
 
@@ -176,7 +160,7 @@ class DataTree extends Application\UI\Control
                 $processedParameters[$key] = $value;
             }
         }
-        
+
         unset($parameters['callback']);
         return Utils\ArrayHash::from($processedParameters);
     }
@@ -287,8 +271,37 @@ class DataTree extends Application\UI\Control
         return $this;
     }
 
+    /** @return Renderin\IRenderer */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
 
-    /** @return array */
+
+    /**
+     * @param Rendering\IRenderer $renderer
+     * @return DataTree
+     */
+    public function setRenderer(Rendering\IRenderer $renderer)
+    {
+        $this->renderer = $renderer;
+        return $this;
+    }
+
+    public function getTranslator()
+    {
+        return $this->translator;
+    }
+
+
+    public function setTranslator(Localization\ITranslator $translator)
+    {
+        $this->translator = $translator;
+        return $this;
+    }
+
+
+        /** @return array */
     public function getOptions()
     {
         return $this->options;
@@ -440,37 +453,6 @@ class DataTree extends Application\UI\Control
 
 
     /**
-     * Get name of event with type LOAD.
-     * @return string
-     */
-    private function getLoadNodesEventName()
-    {
-        $events = $this->getEvents(Events\BaseEvent::TYPE_LOAD);
-        $event = array_pop($events);
-        return substr($event->name, strlen(Events\BaseEvent::PREFIX));
-    }
-
-
-    /** @return string */
-    public function getTemplatePath()
-    {
-        return $this->templatePath;
-    }
-
-
-    /**
-     * Set custom template path.
-     * @param string $templatePath
-     * @return DataTree
-     */
-    public function setTemplatePath($templatePath)
-    {
-        $this->templatePath = $templatePath;
-        return $this;
-    }
-
-
-    /**
      * @internal
      * Get component name path.
      * @return string
@@ -485,14 +467,6 @@ class DataTree extends Application\UI\Control
 
         array_pop($names); // Remove presenter
         return join('-', array_reverse($names));
-    }
-
-
-    /** @inheritdoc */
-    protected function attached($presenter)
-    {
-        parent::attached($presenter);
-        $this->presenter = $this->lookup('Nette\Application\IPresenter');
     }
 
 

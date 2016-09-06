@@ -15,17 +15,17 @@
                     },
                     {/ifset}
                     data: {
-                        url : {link callback!, $loadDataCallback}
+                        url : {$dataTree->link('callback', $loadDataCallback)}
                     }
                 },
                 {foreach $innerPlugins as $innerPlugin}
-                    {control $innerPlugin}
+                    {$innerPlugin->render()|noescape}
                 {/foreach}
                 plugins: [{foreach $plugins as $plugin}{$plugin->getShortName()}{sep},{/sep}{/foreach}],
                 datatree: new $.datatree({$options->elementId}),
             })
             {foreach $events as $event}
-                {control $event}
+                {$event->render()|noescape}
             {/foreach}
             
     {if $isAjax === FALSE}
