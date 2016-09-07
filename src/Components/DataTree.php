@@ -362,7 +362,7 @@ class DataTree extends Application\UI\Control
                 throw new Exceptions\MissingPluginClassException();
             }
 
-            $class = new $this->defaultPlugins[$name];
+            $class = new $this->defaultPlugins[$name]($this);
             $scope = Plugins\BasePlugin::SCOPE_INNER;
         } elseif (($class instanceof Plugins\IPlugin) === FALSE) {
             throw new Exception\UnvalidPluginClassException();

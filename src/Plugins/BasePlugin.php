@@ -8,7 +8,7 @@
 namespace Pehape\DataTree\Plugins;
 
 use Nette\Application\UI;
-
+use Pehape\DataTree\Components;
 
 /**
  * BasePlugin.
@@ -26,6 +26,14 @@ abstract class BasePlugin extends UI\Control implements IPlugin
     /** @var int */
     protected $scope;
 
+    /** @var Components\DataTree */
+    protected $dataTree;
+    
+    public function __construct(Components\DataTree $dataTree)
+    {
+        parent::__construct();
+        $this->dataTree = $dataTree;
+    }
 
     /** @return string */
     public function getShortname()
