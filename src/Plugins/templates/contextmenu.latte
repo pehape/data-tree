@@ -1,0 +1,11 @@
+
+var contextmenu = $('#{$treeId}').jstree(true).settings.contextmenu;
+contextmenu.items = function (node) {
+
+    var defaultItems = $.jstree.defaults.contextmenu.items.call($('#{$treeId}').jstree());
+    
+    {$configuration}
+    
+    return defaultItems;
+    
+};

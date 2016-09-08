@@ -20,14 +20,14 @@
         "nette/application": "~2.3",
         "nette/database": "~2.3",
         "nette/utils": "~2.3",
-        "latte/latte": "^2.3"
+        "latte/latte": "^2.3",
+        "pehape/tools": "^1.1"
     },
     "require-dev": {
         "arachne/codeception": "^0.7.3",
         "tracy/tracy": "~2.3",
         "nette/robot-loader": "~2.3",
-        "squizlabs/php_codesniffer": "^2.6",
-        "pehape/tools": "^1.0"
+        "squizlabs/php_codesniffer": "^2.6"
     },
     "autoload": {
         "psr-4": {

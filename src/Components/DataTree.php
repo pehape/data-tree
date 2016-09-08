@@ -271,6 +271,7 @@ class DataTree extends Application\UI\Control
         return $this;
     }
 
+
     /** @return Renderin\IRenderer */
     public function getRenderer()
     {
@@ -288,6 +289,7 @@ class DataTree extends Application\UI\Control
         return $this;
     }
 
+
     public function getTranslator()
     {
         return $this->translator;
@@ -301,7 +303,7 @@ class DataTree extends Application\UI\Control
     }
 
 
-        /** @return array */
+    /** @return array */
     public function getOptions()
     {
         return $this->options;
@@ -355,7 +357,7 @@ class DataTree extends Application\UI\Control
      * @param int $scope
      * @return IPlugin
      */
-    public function addPlugin($name, $class = NULL, $scope = Plugins\BasePlugin::SCOPE_INNER)
+    public function addPlugin($name, $class = NULL)
     {
         if ($class === NULL) {
             if (array_key_exists($name, $this->defaultPlugins) === FALSE) {
@@ -363,12 +365,10 @@ class DataTree extends Application\UI\Control
             }
 
             $class = new $this->defaultPlugins[$name]($this);
-            $scope = Plugins\BasePlugin::SCOPE_INNER;
         } elseif (($class instanceof Plugins\IPlugin) === FALSE) {
             throw new Exception\UnvalidPluginClassException();
         }
 
-        $class->setScope($scope);
         $this[Plugins\BasePlugin::PREFIX . $name] = $class;
 
         return $class;

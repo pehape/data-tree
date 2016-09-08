@@ -28,6 +28,14 @@
                 {$event->render()|noescape}
             {/foreach}
             
+            $('#{$options->elementId|noescape}').on('loaded.jstree', function () {
+            
+            {foreach $outerPlugins as $outerPlugin}
+                {$outerPlugin->render()|noescape}
+            {/foreach}
+            
+            });
+            
     {if $isAjax === FALSE}
     });
     {/if}

@@ -24,7 +24,7 @@ abstract class BasePlugin extends UI\Control implements IPlugin
     const SCOPE_OUTER = 1;
 
     /** @var int */
-    protected $scope;
+    protected $scope = self::SCOPE_INNER;
 
     /** @var Components\DataTree */
     protected $dataTree;
@@ -73,5 +73,9 @@ abstract class BasePlugin extends UI\Control implements IPlugin
         echo '},' . PHP_EOL;
     }
 
+    protected static function arrayToObject(array $array)
+    {
+        return json_encode($array);
+    }
 
 }
