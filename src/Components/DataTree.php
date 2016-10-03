@@ -61,6 +61,7 @@ class DataTree extends Application\UI\Control
         'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
         'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
         'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
+        'search' => '\Pehape\DataTree\Plugins\SearchPlugin',
     ];
 
     /** @var array List of default events */

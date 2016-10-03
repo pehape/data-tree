@@ -10,6 +10,7 @@ namespace Pehape\DataTree\Plugins;
 use Pehape\DataTree\Components;
 use Pehape\Tools;
 
+
 /**
  * ContextmenuPlugin.
  *
@@ -18,10 +19,10 @@ use Pehape\Tools;
 class ContextmenuPlugin extends BasePlugin
 {
 
-    /** @var Tools\Objects\JObject */
-    private $configuration;
-
-
+    /**
+     * Comstructor.
+     * @param Components\DataTree $dataTree
+     */
     public function __construct(Components\DataTree $dataTree)
     {
         parent::__construct($dataTree);
@@ -40,8 +41,6 @@ class ContextmenuPlugin extends BasePlugin
         $template->configuration = $this->configuration;
         $template->render();
     }
-
-    
 
 
 }

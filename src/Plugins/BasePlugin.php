@@ -9,6 +9,8 @@ namespace Pehape\DataTree\Plugins;
 
 use Nette\Application\UI;
 use Pehape\DataTree\Components;
+use Pehape\Tools;
+
 
 /**
  * BasePlugin.
@@ -28,12 +30,28 @@ abstract class BasePlugin extends UI\Control implements IPlugin
 
     /** @var Components\DataTree */
     protected $dataTree;
-    
+
+    /** @var Tools\Objects\JObject */
+    protected $configuration;
+
+
+    /**
+     * Constructor.
+     * @param Components\DataTree $dataTree
+     */
     public function __construct(Components\DataTree $dataTree)
     {
         parent::__construct();
         $this->dataTree = $dataTree;
     }
+
+
+    /** @return Tools\Objects\JObject */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
+
 
     /** @return string */
     public function getShortname()
@@ -73,9 +91,5 @@ abstract class BasePlugin extends UI\Control implements IPlugin
         echo '},' . PHP_EOL;
     }
 
-    protected static function arrayToObject(array $array)
-    {
-        return json_encode($array);
-    }
 
 }
