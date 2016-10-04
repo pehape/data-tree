@@ -16,8 +16,15 @@ class SearchPlugin extends BasePlugin
 {
 
 
-    public function render()
+    /** Render configuration. */
+    public function renderConfiguration()
     {
+        $template = $this->template;
+        $template->setFile(__DIR__ . '/templates/search.latte');
+
+        $template->treeId = $this->dataTree->getOption('elementId');
+        $template->configuration = $this->configuration;
+        $template->render();
     }
 
 

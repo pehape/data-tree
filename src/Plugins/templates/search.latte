@@ -1,0 +1,9 @@
+
+var to = false;
+$('#dataTree_search').keyup(function () {
+  if(to) { clearTimeout(to); }
+  to = setTimeout(function () {
+    var v = $('#dataTree_search').val();
+    $('#{$treeId}').jstree(true).search(v);
+  }, 250);
+});

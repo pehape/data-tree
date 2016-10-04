@@ -22,14 +22,12 @@ abstract class BasePlugin extends UI\Control implements IPlugin
 
     /** Scopes */
     const PREFIX = 'plugin_';
-    const SCOPE_INNER = 0;
-    const SCOPE_OUTER = 1;
-
-    /** @var int */
-    protected $scope = self::SCOPE_INNER;
 
     /** @var Components\DataTree */
     protected $dataTree;
+
+    /** @var Tools\Objects\JObject */
+    protected $options;
 
     /** @var Tools\Objects\JObject */
     protected $configuration;
@@ -43,6 +41,29 @@ abstract class BasePlugin extends UI\Control implements IPlugin
     {
         parent::__construct();
         $this->dataTree = $dataTree;
+        $this->options = new Tools\Objects\JObject('');
+        $this->configuration = new Tools\Objects\JObject('tree');
+    }
+
+
+    /** Render. */
+    public function render()
+    {
+        $template = $this->template;
+        $template->setFile(__DIR__ . '/templates/plugin.latte');
+        $template->shortname = $this->getShortname();
+        $template->options = $this->options->toJson();
+        $template->render();
+    }
+
+
+    /** Render configuration. */
+    public function renderConfiguration()
+    {
+        $template = $this->template;
+        $template->setFile(__DIR__ . '/templates/configuration.latte');
+        $template->configuration = $this->configuration;
+        $template->render();
     }
 
 
@@ -57,38 +78,6 @@ abstract class BasePlugin extends UI\Control implements IPlugin
     public function getShortname()
     {
         return substr($this->name, strlen(self::PREFIX));
-    }
-
-
-    /**
-     * Set plugin scope.
-     * @param type $scope
-     * @return $scope
-     */
-    public function setScope($scope)
-    {
-        $this->scope = (int) $scope;
-    }
-
-
-    /** @return int */
-    public function getScope()
-    {
-        return $this->scope;
-    }
-
-
-    /** Print begin part of plugin. */
-    protected function printBegin()
-    {
-        echo $this->getShortname() . ': {' . PHP_EOL;
-    }
-
-
-    /** Print end part of plugin. */
-    protected function printEnd()
-    {
-        echo '},' . PHP_EOL;
     }
 
 

@@ -1,9 +1,8 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This file is part of the Pehape libraries (http://pehape.cz)
+ * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
 namespace Pehape\DataTree\Rendering;
@@ -19,9 +18,12 @@ use Pehape\DataTree\Components\DataTree;
 interface IRenderer
 {
 
+
     /**
      * Render data-tree component.
      * @param DataTree $dataTree
      */
     public function render(DataTree $dataTree);
+
+
 }

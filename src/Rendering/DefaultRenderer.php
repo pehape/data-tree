@@ -44,9 +44,7 @@ class DefaultRenderer implements IRenderer
         $this->template->dataTree = $dataTree;
         $this->template->setTranslator($dataTree->getTranslator());
         $this->template->controlName = $dataTree->getControlPath();
-        $this->template->innerPlugins = $dataTree->getPlugins(Plugins\BasePlugin::SCOPE_INNER);
-        $this->template->outerPlugins = $dataTree->getPlugins(Plugins\BasePlugin::SCOPE_OUTER);
-        $this->template->plugins = array_merge($this->template->innerPlugins, $this->template->outerPlugins);
+        $this->template->plugins = $dataTree->getPlugins();
         $this->template->events = $dataTree->getEvents(Events\BaseEvent::TYPE_NODE);
         $loadEvents = $dataTree->getEvents(Events\BaseEvent::TYPE_LOAD);
         $loadEvent = array_pop($loadEvents);

@@ -15,11 +15,4 @@ namespace Pehape\DataTree\Plugins;
 class CheckboxPlugin extends BasePlugin
 {
 
-
-    /** Render. */
-    public function render()
-    {
-    }
-
-
 }

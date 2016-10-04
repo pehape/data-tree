@@ -18,8 +18,8 @@
                         url : {$dataTree->link('callback', $loadDataCallback)}
                     }
                 },
-                {foreach $innerPlugins as $innerPlugin}
-                    {$innerPlugin->render()|noescape}
+                {foreach $plugins as $plugin}
+                    {$plugin->render()|noescape}
                 {/foreach}
                 plugins: [{foreach $plugins as $plugin}{$plugin->getShortName()}{sep},{/sep}{/foreach}],
                 datatree: new $.datatree({$options->elementId}),
@@ -30,9 +30,11 @@
             
             $('#{$options->elementId|noescape}').on('loaded.jstree', function () {
             
-            {foreach $outerPlugins as $outerPlugin}
-                {$outerPlugin->render()|noescape}
-            {/foreach}
+                var tree = $('#{$options->elementId|noescape}');
+            
+                {foreach $plugins as $plugin}
+                    {$plugin->renderConfiguration()|noescape}
+                {/foreach}
             
             });
             

@@ -27,6 +27,7 @@ interface IDataSource
     /**
      * Get nodes for the DataTree.
      * @param array $conditions
+     * @param string $order
      * @return mixed
      */
     public function getNodes(array $conditions);

@@ -6,6 +6,69 @@ contextmenu.items = function (node) {
     
     {$configuration}
     
+    {foreach $submenu as $menuName => $menuContent}
+        defaultItems.{$menuName}.submenu = {
+        {foreach $menuContent as $submenuName => $submenuContent}
+            {$submenuName}: {
+                {foreach $submenuContent as $key => $value}
+                    {if $key === 'action'}
+                        {$key}: function(obj) {
+                            var position = 'first';
+                            var parent = $('#{$treeId}').jstree('get_selected');
+                            $('#{$treeId}').jstree("open_node", parent);
+                            var newNode = {
+                                type: "{$submenuContent['type']}"
+                            };
+                            $('#{$treeId}').jstree("{$value}", parent, newNode, position, function(newId) {
+                                $('#{$treeId}').jstree('edit', newId);
+                            }, false);
+                        }
+                    {elseif $key === 'type'}
+                    {else}
+                        {$key}: "{$value}",
+                    {/if}
+                {/foreach}
+            },
+        {/foreach}
+        };
+    {/foreach}
+    
+    {foreach $disabledItemsOnId as $id => $items}
+        if (parseInt(node.id) === {$id}) {
+        {foreach $items as $itemKey => $itemValue}
+            {if is_string($itemValue) === TRUE}
+            defaultItems.{$itemValue}._disabled = true;
+            {else}
+                {foreach $itemValue as $subitemKey => $subitemValue}
+                    {if $subitemValue === 'submenu'}
+                        defaultItems.{$itemKey}.submenu = false;
+                    {else}
+                        defaultItems.{$itemKey}.submenu.{$subitemValue}._disabled = true;
+                    {/if}
+                {/foreach}
+            {/if}
+        {/foreach}
+        }
+    {/foreach}
+    
+    {foreach $disabledItemsOnType as $type => $items}
+        if (node.type === "{$type}") {
+        {foreach $items as $itemKey => $itemValue}
+            {if is_string($itemValue) === TRUE}
+            defaultItems.{$itemValue}._disabled = true;
+            {else}
+                {foreach $itemValue as $subitemKey => $subitemValue}
+                    {if $subitemValue === 'submenu'}
+                        defaultItems.{$itemKey}.submenu = false;
+                    {else}
+                        defaultItems.{$itemKey}.submenu.{$subitemValue}._disabled = true;
+                    {/if}
+                {/foreach}
+            {/if}
+        {/foreach}
+        }
+    {/foreach}
+    
     return defaultItems;
     
 };

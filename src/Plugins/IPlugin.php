@@ -20,10 +20,12 @@ interface IPlugin
     public function render();
 
 
-    /** Get plugin scope. */
-    public function getScope();
+    /** Render configuration */
+    public function renderConfiguration();
 
 
     /** Get short plugin name. */
     public function getShortname();
+
+
 }

@@ -57,11 +57,11 @@ class DataTree extends Application\UI\Control
 
     /** @var array List of default plugins */
     private $defaultPlugins = [
-        'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
         'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
         'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
         'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
         'search' => '\Pehape\DataTree\Plugins\SearchPlugin',
+        'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
     ];
 
     /** @var array List of default events */
@@ -355,7 +355,6 @@ class DataTree extends Application\UI\Control
      * Add plugin
      * @param string $name
      * @param Plugins\IPlugin|NULL
-     * @param int $scope
      * @return IPlugin
      */
     public function addPlugin($name, $class = NULL)
@@ -377,18 +376,13 @@ class DataTree extends Application\UI\Control
 
 
     /**
-     * Get plugins.
-     * @param int|NULL $scope
+     * Get all plugins.
      * @return array
      */
-    public function getPlugins($scope = NULL)
+    public function getPlugins()
     {
-        $plugins = array_filter((array) $this->getComponents(), function ($component) use ($scope) {
-            if ($scope !== NULL) {
-                return (substr($component->name, 0, strlen(Plugins\BasePlugin::PREFIX)) === Plugins\BasePlugin::PREFIX && $component->getScope() === $scope);
-            } else {
-                return (substr($component->name, 0, strlen(Plugins\BasePlugin::PREFIX)) === Plugins\BasePlugin::PREFIX);
-            }
+        $plugins = array_filter((array) $this->getComponents(), function ($component) {
+            return (substr($component->name, 0, strlen(Plugins\BasePlugin::PREFIX)) === Plugins\BasePlugin::PREFIX);
         });
 
         return $plugins;

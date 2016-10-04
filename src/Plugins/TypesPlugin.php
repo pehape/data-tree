@@ -7,6 +7,9 @@
 
 namespace Pehape\DataTree\Plugins;
 
+use Pehape\Tools;
+
+
 /**
  * TypesPlugin.
  *
@@ -15,53 +18,27 @@ namespace Pehape\DataTree\Plugins;
 class TypesPlugin extends BasePlugin
 {
 
-    /** @var array */
-    private $types = [];
-
-
-    /** Render. */
-    public function render()
-    {
-        if (count($this->types) > 0) {
-            $this->printBegin();
-        }
-
-        foreach ($this->types as $name => $content) {
-            $this->printType($name, $content);
-        }
-
-        if (count($this->types) > 0) {
-            $this->printEnd();
-        }
-    }
-
 
     /**
      * Register new type.
      * @param string $name
      * @param string $icon
+     * @param array $validChildren
      * @return Plugins\TypesPlugin
      */
-    public function registerType($name, $icon)
+    public function registerType($name, $icon, array $validChildren = NULL)
     {
-        $this->types[$name] = [
-            'icon' => $icon,
-        ];
+        if (($this->options->$name instanceof Tools\Objects\JObject) === FALSE) {
+            $this->options->$name = new Tools\Objects\JObject('');
+        }
+
+        $type = $this->options->$name;
+        $type->icon = $icon;
+        if ($validChildren !== NULL) {
+            $type->valid_children = $validChildren;
+        }
 
         return $this;
-    }
-
-
-    /**
-     * Print type.
-     * @param string $name
-     * @param array $content
-     */
-    private function printType($name, array $content)
-    {
-        echo '\'' . $name . '\': {' . PHP_EOL;
-        echo 'icon: \'' . $content['icon'] . '\'' . PHP_EOL;
-        echo '},' . PHP_EOL;
     }
 
 

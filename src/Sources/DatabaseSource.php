@@ -41,9 +41,16 @@ class DatabaseSource implements IDataSource
     /** @var bool */
     private $selfTransaction = FALSE;
 
+    /** @var string */
+    private $order = self::ORDER_ASC;
+
     /** Default table names. */
     const DEF_BASE_TABLE_NAME = 'data';
     const DEF_CLOSURE_TABLE_NAME = 'data_closure';
+
+    /** Orders */
+    const ORDER_ASC = 'ASC';
+    const ORDER_DESC = 'DESC';
 
 
     /**
@@ -86,11 +93,12 @@ class DatabaseSource implements IDataSource
     /**
      * Get nodes.
      * @param array $conditions
+     * @param string $order
      * @return array
      */
     public function getNodes(array $conditions = [])
     {
-        return $this->getTree($conditions);
+        return $this->getTree($conditions, $this->order);
     }
 
 
@@ -363,17 +371,30 @@ class DatabaseSource implements IDataSource
 
 
     /**
+     * Set data ordering.
+     * @param string $order
+     * @return DatabaseSource
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+        return $this;
+    }
+
+
+    /**
      * Select nodes for the DataTree.
      * @param array $conditions
+     * @param string $order
      * @return array
      */
-    private function getTree(array $conditions = [])
+    private function getTree(array $conditions = [], $order = self::ORDER_ASC)
     {
         return $this->db->query("
             SELECT * 
                 FROM $this->closureTableName closure
                 LEFT JOIN $this->baseTableName data ON (data.id = closure.descendant)
-                WHERE closure.depth = 1")->fetchAll();
+                WHERE closure.depth = 1 ORDER BY data.name $order")->fetchAll();
     }
 
 
