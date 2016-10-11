@@ -50,6 +50,7 @@ class DataTree extends Application\UI\Control
         'titleElementType' => 'div',
         'defaultState' => self::STATE_OPEN,
         'joinTree' => NULL,
+        'lazy' => FALSE,
     ];
 
     /** @var array */

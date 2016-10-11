@@ -283,6 +283,17 @@ class DatabaseSource implements IDataSource
 
 
     /**
+     * Get children count of node.
+     * @param int $id
+     * @return int
+     */
+    public function getChildrenCountFrom($id)
+    {
+        return ($this->getClosureTable()->where('ancestor', $id)->count() - 1);
+    }
+
+
+    /**
      * Get parents of node.
      * @param int $id
      * @param bool $self
@@ -390,11 +401,20 @@ class DatabaseSource implements IDataSource
      */
     private function getTree(array $conditions = [], $order = self::ORDER_ASC)
     {
-        return $this->db->query("
+        $query = "
             SELECT * 
                 FROM $this->closureTableName closure
                 LEFT JOIN $this->baseTableName data ON (data.id = closure.descendant)
-                WHERE closure.depth = 1 ORDER BY data.name $order")->fetchAll();
+                WHERE closure.depth = 1 ";
+        foreach ($conditions as $name => $content) {
+            switch ($name) {
+                case 'ancestor':
+                    $query .= "AND closure.ancestor = $content AND closure.depth = 1 ";
+                    break;
+            }
+        }
+
+        return $this->db->query($query . "ORDER BY data.name $order")->fetchAll();
     }
 
 

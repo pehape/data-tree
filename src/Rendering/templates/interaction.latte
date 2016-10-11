@@ -15,7 +15,14 @@
                     },
                     {/ifset}
                     data: {
-                        url : {$dataTree->link('callback', $loadDataCallback)}
+                        url: function (node) {
+                            {if $options['lazy'] === FALSE}
+                                return {$dataTree->link('callback', $loadDataCallback)};
+                            {else}
+                                var realNodeId = (node.id === '#') ? 0 : node.id;
+                                return {$dataTree->link('callback', $loadDataCallback)} + '&' + {$controlName} + '-nodeId=' + realNodeId;
+                            {/if}
+                        }
                     }
                 },
                 {foreach $plugins as $plugin}

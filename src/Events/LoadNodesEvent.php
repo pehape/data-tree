@@ -7,6 +7,7 @@
 
 namespace Pehape\DataTree\Events;
 
+use Nette\Utils\ArrayHash;
 use Pehape\DataTree\Components\DataTree;
 
 
@@ -35,11 +36,20 @@ class LoadNodesEvent extends BaseEvent
 
     public function getDefaultCallback()
     {
-        return function (DataTree $tree) {
-            $nodes = $tree->getDataSource()->getNodes();
+        return function (DataTree $tree, ArrayHash $parameters) {
+
+            $nodes = (isset($parameters->nodeId) === TRUE) ?
+                $tree->getDataSource()->getNodes(['ancestor' => $parameters->nodeId]) :
+                $tree->getDataSource()->getNodes();
             $mappedData = $tree->getDataMapper()->applyMapping($nodes);
 
-            array_walk($mappedData, function (& $item) use ($tree) {
+            array_walk($mappedData, function (& $item) use ($tree, $parameters) {
+
+                if (isset($parameters->nodeId) === TRUE) {
+                    // Lazy loading
+                    $childrenCount = $tree->getDataSource()->getChildrenCountFrom($item['id']);
+                    $item['children'] = ($childrenCount > 0);
+                }
 
                 if (in_array($item['id'], $tree->getSelectedNodes()) === TRUE) {
                     $item['state']['selected'] = TRUE;
