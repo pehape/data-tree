@@ -7,6 +7,9 @@
 
 namespace Pehape\DataTree\Plugins;
 
+use Pehape\DataTree\Components;
+
+
 /**
  * SearchPlugin.
  *
@@ -14,6 +17,23 @@ namespace Pehape\DataTree\Plugins;
  */
 class SearchPlugin extends BasePlugin
 {
+
+    /** @var string */
+    private $inputId;
+
+    /** @var string */
+    private $inputClass;
+
+
+    /**
+     * Construct.
+     * @param Components\DataTree $dataTree
+     */
+    public function __construct(Components\DataTree $dataTree)
+    {
+        parent::__construct($dataTree);
+        $this->inputId = $dataTree->getOption('elementId') . '_search_' . time();
+    }
 
 
     /** Render configuration. */
@@ -23,8 +43,46 @@ class SearchPlugin extends BasePlugin
         $template->setFile(__DIR__ . '/templates/search.latte');
 
         $template->treeId = $this->dataTree->getOption('elementId');
+        $template->inputId = $this->inputId;
+        $template->inputClass = $this->inputClass;
         $template->configuration = $this->configuration;
         $template->render();
+    }
+
+
+    /** @return string */
+    public function getInputId()
+    {
+        return $this->inputId;
+    }
+
+
+    /**
+     * @param string $inputId
+     * @return SearchPlugin
+     */
+    public function setInputId($inputId)
+    {
+        $this->inputId = $inputId;
+        return $this;
+    }
+
+
+    /** @return string */
+    public function getInputClass()
+    {
+        return $this->inputClass;
+    }
+
+
+    /**
+     * @param string $inputClass
+     * @return SearchPlugin
+     */
+    public function setInputClass($inputClass)
+    {
+        $this->inputClass = $inputClass;
+        return $this;
     }
 
 

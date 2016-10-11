@@ -1,9 +1,12 @@
 
+var searchInput = $('<input>', { class: '{$inputClass}', type: 'text', placeholder: 'Search ...', id: '{$inputId}'});
+$('#{$treeId}' + '_datatreeToolbox').append(searchInput);
+
 var to = false;
-$('#dataTree_search').keyup(function () {
+$('#{$inputId}').keyup(function () {
   if(to) { clearTimeout(to); }
   to = setTimeout(function () {
-    var v = $('#dataTree_search').val();
+    var v = $('#{$inputId}').val();
     $('#{$treeId}').jstree(true).search(v);
   }, 250);
 });
