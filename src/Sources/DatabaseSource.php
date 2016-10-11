@@ -289,12 +289,12 @@ class DatabaseSource implements IDataSource
      * @param int $limit
      * @return array
      */
-    public function getParentsFrom($id, $self = TRUE, $limit = NULL)
+    public function getParentsFrom($id, $self = TRUE, $limit = NULL, $order = 'ASC')
     {
         $selection = $this->getBaseTable()
             ->select($this->baseTableName . '.*, depth')
             ->where(':' . $this->closureTableName . '.descendant', $id)
-            ->order('depth', 'ASC');
+            ->order('depth ' . $order);
 
         if ($self === FALSE) {
             $selection->where('depth > ?', 0);
