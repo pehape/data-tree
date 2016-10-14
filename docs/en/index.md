@@ -52,7 +52,7 @@ For example in your TreePresenter.php write:
 
 ```php
 
-/** @var \Pehape\DataTree\Components\IDataTree */
+/** @var \Pehape\DataTree\Components\IDataTree @inject */
 public $dataTree;
 
 ...
