@@ -1,7 +1,7 @@
 Documentation
 ======
 
-Tools, scripts and assets for Pehape libraries.
+Tree data-structure component for Nette Framework.
 
 ![alt tag](https://raw.githubusercontent.com/pehape/data-tree/assets/static/images/tree-example.png)
 
