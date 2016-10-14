@@ -5,14 +5,14 @@ DataTree is tree data-structure component for Nette Framework.
 =======
 Tree data-structure component for Nette Framework.
 
-![alt tag](https://raw.githubusercontent.com/pehape/data-tree/assets/static/images/tree-example.png)
+![datatree](https://raw.githubusercontent.com/pehape/data-tree/master/assets/static/images/tree-example.png)
 
 Prerequisities
 ------------
 
 ### Database initialization ###
 
-Open your mysql client and run the script **assets/static/sql/ini.sql**. This script will create 2 tables (default names: datatree, datatree_closure). You can change these names in the ini script.
+Open your mysql client and run the script **assets/static/sql/ini.sql**. This script will create 2 tables (default names: data, data_closure). You can change these names in the ini script.
 
 ### Client side ###
 
@@ -81,7 +81,7 @@ Each DataTree source must implement interface **IDataSource**. You can use DI an
 
 **DatabaseSource**
 
-By default, the DatabaseSource works with tables "datatree" and "datatree_closure". You can change these options by the following code:
+By default, the DatabaseSource works with tables "data" and "data_closure". You can change these options by the following code:
 
 ```php
 $dataTree->getDataSource()->setBaseTableName('datatree');
@@ -122,16 +122,6 @@ You can set your own renderer with custom template:
 ```php
 $dataTree->setRenderer(new YourRenderer());
 ```
-
-*DefaultRenderer*
-![alt tag](https://raw.githubusercontent.com/pehape/data-tree/assets/static/images/render-default.png)
-
-*BootstrapRenderer*
-![alt tag](https://raw.githubusercontent.com/pehape/data-tree/assets/static/images/render-bootstrap.png)
-
-*AdminlteRenderer*
-![alt tag](https://raw.githubusercontent.com/pehape/data-tree/assets/static/images/render-adminlte.png)
-
 ### Events ###
 
 DataTree component has it's own eventing system. The most of events coresponds with jsTree events.
