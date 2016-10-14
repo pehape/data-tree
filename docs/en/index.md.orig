@@ -1,6 +1,7 @@
 Documentation
 ======
 
+<<<<<<< HEAD
 DataTree is tree data-structure component for Nette Framework.
 =======
 Tree data-structure component for Nette Framework.
@@ -193,3 +194,4 @@ $dataTree->addPlugin('contextmenu');
 ```
 
 Each plugin has common configuration, which can be used to post-configuration of jsTree JavaScript object. Configuration property is type of [\Pehape\Tools\Objects\JObject](https://github.com/pehape/tools/blob/master/docs/en/index.md#3-javascript-object-jobject).
+>>>>>>> c2bc3011f7d59eadfabc91886259b7b926d35ee3
