@@ -52,20 +52,20 @@ For example in your TreePresenter.php write:
 
 ```php
 
-	/** @var \Pehape\DataTree\Components\IDataTree */
-	public $dataTree;
+/** @var \Pehape\DataTree\Components\IDataTree */
+public $dataTree;
 
-	...
+...
 
-	/** @return \Pehape\DataTree\Components\DataTree */
-	protected function createComponentDataTree()
-	{
-		$dataTree = $this->dataTree->create();
-	
-		// Configure the tree
+/** @return \Pehape\DataTree\Components\DataTree */
+protected function createComponentDataTree()
+{
+	$dataTree = $this->dataTree->create();
 
-		return $dataTree;
-	}
+	// Configure the tree
+
+	return $dataTree;
+}
 
 
 ```
@@ -82,8 +82,8 @@ Each DataTree source must implement interface **IDataSource**. You can use DI an
 By default, the DatabaseSource works with tables "datatree" and "datatree_closure". You can change these options by the following code:
 
 ```php
-	$dataTree->getDataSource()->setBaseTableName('datatree');
-	$dataTree->getDataSource()->setClosureTableName('datatree_closure');
+$dataTree->getDataSource()->setBaseTableName('datatree');
+$dataTree->getDataSource()->setClosureTableName('datatree_closure');
 ```
 
 ### Data mapping ###
@@ -96,15 +96,15 @@ DatabaseMapper maps database table columns to json object used by jsTree library
 You can change mapping by:
 
 ```php
-	$dataTree->getDataMapper()->setMapping($mappingArray);
+$dataTree->getDataMapper()->setMapping($mappingArray);
 ```
 
 or you can even set your own data mapper:
 
 ```php
-	$dataMapper = new YourDataMapper();
-	$dataMapper->setMapping($mappingArray);
-	$dataTree->setDataMapper($dataMapper);
+$dataMapper = new YourDataMapper();
+$dataMapper->setMapping($mappingArray);
+$dataTree->setDataMapper($dataMapper);
 ```
 
 ### Rendering ###
@@ -118,7 +118,7 @@ DataTree library offers 3 various renderers:
 You can set your own renderer with custom template:
 
 ```php
-	$dataTree->setRenderer(new YourRenderer());
+$dataTree->setRenderer(new YourRenderer());
 ```
 
 *DefaultRenderer*
@@ -137,30 +137,30 @@ DataTree component has it's own eventing system. The most of events coresponds w
 **Default events are defined in DataTree component class:**
 
 ```php
-	/** @var array List of default events */
-    private $defaultEvents = [
-        'load_nodes' => '\Pehape\DataTree\Events\LoadNodesEvent',
-        'select_node' => '\Pehape\DataTree\Events\SelectNodeEvent',
-        'create_node' => '\Pehape\DataTree\Events\CreateNodeEvent',
-        'rename_node' => '\Pehape\DataTree\Events\RenameNodeEvent',
-        'delete_node' => '\Pehape\DataTree\Events\DeleteNodeEvent',
-        'move_node' => '\Pehape\DataTree\Events\MoveNodeEvent',
-        'paste' => '\Pehape\DataTree\Events\PasteNodeEvent',
-    ];
+/** @var array List of default events */
+private $defaultEvents = [
+	'load_nodes' => '\Pehape\DataTree\Events\LoadNodesEvent',
+	'select_node' => '\Pehape\DataTree\Events\SelectNodeEvent',
+	'create_node' => '\Pehape\DataTree\Events\CreateNodeEvent',
+	'rename_node' => '\Pehape\DataTree\Events\RenameNodeEvent',
+	'delete_node' => '\Pehape\DataTree\Events\DeleteNodeEvent',
+	'move_node' => '\Pehape\DataTree\Events\MoveNodeEvent',
+	'paste' => '\Pehape\DataTree\Events\PasteNodeEvent',
+];
 ```
 
 Each of these events has default implementation of callback. You can set your own callback by:
 
 ```php
-	$dataTree->getEvent('select_node')->setCallback([$this, 'selectNodeCallback']);
-	
-	...
+$dataTree->getEvent('select_node')->setCallback([$this, 'selectNodeCallback']);
 
-	public function selectNodeCallback(\Pehape\DataTree\Components\DataTree $dataTree, \Nette\Utils\ArrayHash $parameters)
-	{
-		...
-		$dataTree->sendSuccessResponse($data);
-	}
+...
+
+public function selectNodeCallback(\Pehape\DataTree\Components\DataTree $dataTree, \Nette\Utils\ArrayHash $parameters)
+{
+	...
+	$dataTree->sendSuccessResponse($data);
+}
 ```
 
 As you can see, each callback accepts 2 parameters:
@@ -174,20 +174,20 @@ As you can see, each callback accepts 2 parameters:
 DataTree component has it's own plugin system. The most of plugins coresponds with jsTree plugins.
 
 ```php
-	/** @var array List of default plugins */
-    private $defaultPlugins = [
-        'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
-        'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
-        'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
-        'search' => '\Pehape\DataTree\Plugins\SearchPlugin',
-        'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
-    ];
+/** @var array List of default plugins */
+private $defaultPlugins = [
+	'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
+	'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
+	'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
+	'search' => '\Pehape\DataTree\Plugins\SearchPlugin',
+	'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
+];
 ```
 
 By default, no plugin is enabled. You can enable plugin by:
 
 ```php
-	$dataTree->addPlugin('contextmenu');
+$dataTree->addPlugin('contextmenu');
 ```
 
 Each plugin has common configuration, which can be used to post-configuration of jsTree JavaScript object. Configuration property is type of [\Pehape\Tools\Objects\JObject](https://github.com/pehape/tools/blob/master/docs/en/index.md#3-javascript-object-jobject).
