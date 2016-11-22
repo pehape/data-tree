@@ -32,9 +32,15 @@ interface IEvent
     public function getSide();
 
 
+    /** @return string */
+    public function getConfirm();
+
+
     /**
      * Get name of real jstree event.
      * @return string
      */
     public function getRealname();
+
+
 }

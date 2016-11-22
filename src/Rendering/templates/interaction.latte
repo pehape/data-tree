@@ -8,7 +8,14 @@
             .jstree({
                 core: {
                     animation: 0,
-                    check_callback: true,
+                    check_callback : function (op) {
+                        {foreach $events as $event}
+                            {var $confirm = $event->getConfirm()}
+                            {if $confirm !== NULL}
+                                if (op === {$event->getRealname()}) { return confirm({_$confirm}); }
+                            {/if}
+                        {/foreach}
+                    },
                     {ifset $options['theme']}
                     themes: {
                         name: {$options['theme']['name']},

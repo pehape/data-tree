@@ -44,6 +44,9 @@ abstract class BaseEvent extends UI\Control implements IEvent
     protected $refreshOnSuccess = TRUE;
     protected $refreshOnError = TRUE;
 
+    /** @var string|NULL */
+    protected $confirm = NULL;
+
 
     public function render()
     {
@@ -117,6 +120,7 @@ abstract class BaseEvent extends UI\Control implements IEvent
         return $parametersString;
     }
 
+
     public function getSide()
     {
         return $this->side;
@@ -129,6 +133,18 @@ abstract class BaseEvent extends UI\Control implements IEvent
         return $this;
     }
 
+
+    public function getConfirm()
+    {
+        return $this->confirm;
+    }
+
+
+    public function setConfirm($confirm)
+    {
+        $this->confirm = $confirm;
+        return $this;
+    }
 
 
 }
