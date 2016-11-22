@@ -43,7 +43,14 @@ class LoadNodesEvent extends BaseEvent
                 $tree->getDataSource()->getNodes();
             $mappedData = $tree->getDataMapper()->applyMapping($nodes);
 
-            array_walk($mappedData, function (& $item) use ($tree, $parameters) {
+            // Additional options for nodes
+            $options = [
+                'selected_nodes' => $tree->getSelectedNodes(),
+                'opened_nodes' => $tree->getOpenedNodes(),
+                'disabled_nodes' => $tree->getDisabledNodes(),
+            ];
+
+            array_walk($mappedData, function (& $item) use ($tree, $parameters, $options) {
 
                 if (isset($parameters->nodeId) === TRUE) {
                     // Lazy loading
@@ -51,15 +58,15 @@ class LoadNodesEvent extends BaseEvent
                     $item['children'] = ($childrenCount > 0);
                 }
 
-                if (in_array($item['id'], $tree->getSelectedNodes()) === TRUE) {
+                if (in_array($item['id'], $options['selected_nodes']) === TRUE) {
                     $item['state']['selected'] = TRUE;
                 }
 
-                if (in_array($item['id'], $tree->getOpenedNodes()) === TRUE) {
+                if (in_array($item['id'], $options['opened_nodes']) === TRUE) {
                     $item['state']['opened'] = TRUE;
                 }
 
-                if (in_array($item['id'], $tree->getDisabledNodes()) === TRUE) {
+                if (in_array($item['id'], $options['disabled_nodes']) === TRUE) {
                     $item['state']['disabled'] = TRUE;
                 }
             });
