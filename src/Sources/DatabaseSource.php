@@ -259,6 +259,21 @@ class DatabaseSource implements IDataSource
     /**
      * Get children of node.
      * @param int $id
+     * @return array
+     */
+    public function getChildrenOf($id)
+    {
+        return $this->db->query('SELECT c.*, cc2.ancestor, cc.descendant, cc.depth
+            FROM ' . $this->getBaseTableName() . ' c
+            JOIN ' . $this->getClosureTableName() . ' cc ON (c.id = cc.descendant)
+            LEFT JOIN ' . $this->getClosureTableName() . ' cc2 ON (cc2.descendant = cc.descendant AND cc2.depth = 1)
+            WHERE cc.ancestor = ? AND cc.depth = ?', $id, 1)->fetchAll();
+    }
+
+
+    /**
+     * Get children from node.
+     * @param int $id
      * @param bool $self
      * @return array
      */
@@ -290,6 +305,21 @@ class DatabaseSource implements IDataSource
     public function getChildrenCountFrom($id)
     {
         return ($this->getClosureTable()->where('ancestor', $id)->count() - 1);
+    }
+
+
+    /**
+     * Get parent of node.
+     * @param int $id
+     * @return Table\IRow|NULL
+     */
+    public function getParentOf($id)
+    {
+        return $this->getBaseTable()
+                ->select($this->baseTableName . '.*, depth')
+                ->where(':' . $this->closureTableName . '.descendant', $id)
+                ->where(':' . $this->closureTableName . '.depth', 1)
+                ->fetch();
     }
 
 
