@@ -34,7 +34,7 @@ contextmenu.items = function (node) {
     {/foreach}
     
     {foreach $disabledItemsOnId as $id => $items}
-        if (parseInt(node.id) === {$id}) {
+        if (parseInt(node.id) == {$id}) {
         {foreach $items as $itemKey => $itemValue}
             {if is_string($itemValue) === TRUE}
             defaultItems.{$itemValue}._disabled = true;
@@ -52,7 +52,7 @@ contextmenu.items = function (node) {
     {/foreach}
     
     {foreach $disabledItemsOnType as $type => $items}
-        if (node.type === "{$type}") {
+        if (node.type == "{$type}") {
         {foreach $items as $itemKey => $itemValue}
             {if is_string($itemValue) === TRUE}
             defaultItems.{$itemValue}._disabled = true;
