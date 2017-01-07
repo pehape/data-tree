@@ -5,7 +5,7 @@
     var datatree = tree.settings.datatree;
     var callback = datatree.fireCallback(
         '{$eventCallback|noescape}',
-        {$parametersString},
+        {$parametersString|noescape},
         '{$controlName}',
         '{$joinTree}');
 
