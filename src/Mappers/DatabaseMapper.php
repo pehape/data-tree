@@ -65,6 +65,10 @@ class DatabaseMapper implements IDataMapper
                 $mappedItem['parent'] = '#';
             }
 
+            if (isset($mappedItem['type']) === TRUE) {
+                $mappedItem['type'] = (string) $mappedItem['type'];
+            }
+
             $mappedData[] = $mappedItem;
         }
 
