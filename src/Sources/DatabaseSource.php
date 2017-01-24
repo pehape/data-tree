@@ -52,6 +52,8 @@ class DatabaseSource implements IDataSource
     const ORDER_ASC = 'ASC';
     const ORDER_DESC = 'DESC';
 
+    private $defaultOrder = NULL;
+    private $defaultConditions = NULL;
 
     /**
      * Constructor.
@@ -436,6 +438,11 @@ class DatabaseSource implements IDataSource
                 FROM $this->closureTableName closure
                 LEFT JOIN $this->baseTableName data ON (data.id = closure.descendant)
                 WHERE closure.depth = 1 ";
+        // Add default conditions
+        if ($this->defaultConditions !== NULL) {
+            $query .= "AND $this->defaultConditions ";
+        }
+        
         foreach ($conditions as $name => $content) {
             switch ($name) {
                 case 'ancestor':
@@ -443,8 +450,13 @@ class DatabaseSource implements IDataSource
                     break;
             }
         }
-
-        return $this->db->query($query . "ORDER BY data.name $order")->fetchAll();
+        
+        $query .= "ORDER BY ";
+        if ($this->defaultOrder !== NULL) {
+            $query .= "$this->defaultOrder, ";
+        }
+        
+        return $this->db->query($query . "data.name $order")->fetchAll();
     }
 
 
@@ -510,6 +522,20 @@ class DatabaseSource implements IDataSource
             $this->selfTransaction = FALSE;
         }
     }
+
+    public function setDefaultOrder($defaultOrder)
+    {
+        $this->defaultOrder = $defaultOrder;
+        return $this;
+    }
+
+
+    public function setDefaultConditions($defaultConditions)
+    {
+        $this->defaultConditions = $defaultConditions;
+        return $this;
+    }
+
 
 
 }
