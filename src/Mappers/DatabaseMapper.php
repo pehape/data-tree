@@ -54,7 +54,7 @@ class DatabaseMapper implements IDataMapper
         foreach ($data as $dataItem) {
             $mappedItem = [];
             foreach ($this->getMapping() as $key => $replacement) {
-                if (isset($dataItem->$key) === FALSE) {
+                if (array_key_exists($key, $dataItem) === FALSE) {
                     throw new Exceptions\UnvalidDataMappingException($key);
                 }
 
