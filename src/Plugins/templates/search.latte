@@ -1,6 +1,8 @@
 
-var searchInput = $('<input>', { class: '{$inputClass}', type: 'text', placeholder: 'Search ...', id: '{$inputId}'});
+var searchInput = $('<input>', { class: '{$inputClass}', style: 'width: 90%; float: left', type: 'text', placeholder: 'Search ...', id: '{$inputId}'});
+var checkInput = $('<input>', { type: 'checkbox', style: 'margin-left: 10px; margin-top: 12px', id: '{$inputId}_check', title: 'Show only matches'});
 $('#{$treeId}' + '_datatreeToolbox').append(searchInput);
+$('#{$treeId}' + '_datatreeToolbox').append(checkInput);
 
 var to = false;
 $('#{$inputId}').keyup(function () {
@@ -9,4 +11,11 @@ $('#{$inputId}').keyup(function () {
     var v = $('#{$inputId}').val();
     $('#{$treeId}').jstree(true).search(v);
   }, 250);
+});
+
+$('#{$inputId}_check').change(function () {
+    var v = $('#{$inputId}').val();
+    var postionTree = $.jstree.reference('#{$treeId}');
+    postionTree.settings.search.show_only_matches = $('#{$inputId}_check').prop('checked');
+    postionTree.search(v, false);
 });
