@@ -20,6 +20,9 @@ class ContextmenuPlugin extends BasePlugin
 {
 
     /** @var array */
+    private $menu = [];
+
+    /** @var array */
     private $submenu = [];
 
     /** @var array */
@@ -48,10 +51,24 @@ class ContextmenuPlugin extends BasePlugin
 
         $template->treeId = $this->dataTree->getOption('elementId');
         $template->configuration = $this->configuration;
+        $template->menu = $this->menu;
         $template->submenu = $this->submenu;
         $template->disabledItemsOnId = $this->disabledItemsOnId;
         $template->disabledItemsOnType = $this->disabledItemsOnType;
         $template->render();
+    }
+
+
+    /**
+     * Add new menu.
+     * @param string $name
+     * @param array $configuration
+     * @return ContextmenuPlugin
+     */
+    public function addMenu($name, array $configuration)
+    {
+        $this->menu[$name] = $configuration;
+        return $this;
     }
 
 

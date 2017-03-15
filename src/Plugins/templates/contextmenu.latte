@@ -4,7 +4,9 @@ contextmenu.items = function (node) {
 
     var defaultItems = $.jstree.defaults.contextmenu.items.call($('#{$treeId}').jstree());
     
-    {$configuration}
+    {foreach $menu as $menuName => $menuContent}
+        defaultItems.{$menuName} = {json_encode($menuContent)|noescape}
+    {/foreach}
     
     {foreach $submenu as $menuName => $menuContent}
         defaultItems.{$menuName}.submenu = {
@@ -32,6 +34,8 @@ contextmenu.items = function (node) {
         {/foreach}
         };
     {/foreach}
+    
+    {$configuration|noescape}
     
     {foreach $disabledItemsOnId as $id => $items}
         if (parseInt(node.id) == {$id}) {
