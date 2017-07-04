@@ -269,7 +269,7 @@ class DataTree extends Application\UI\Control
      */
     public function setDataMapper(Mappers\IDataMapper $mapper)
     {
-        $this->mapper = $mapper;
+        $this->dataMapper = $mapper;
         return $this;
     }
 
