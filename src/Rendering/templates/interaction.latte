@@ -18,7 +18,7 @@
                     },
                     {ifset $options['theme']}
                     themes: {
-                        name: {$options['theme']['name']},
+                        name: {$options['theme']['name']}
                     },
                     {/ifset}
                     data: {
@@ -37,6 +37,20 @@
                 {/foreach}
                 plugins: [{foreach $plugins as $plugin}{$plugin->getShortName()}{sep},{/sep}{/foreach}],
                 datatree: new $.datatree({$options->elementId}),
+            })
+            .on('open_node.jstree changed.jstree loaded.jstree', function (e, data) {
+                var tree = $('#{$options->elementId|noescape}');
+                tree.find('li[data-labels] span.label').remove();
+                tree.find('li[data-labels]').each( function () {
+                    var labels = JSON.parse($(this).attr('data-labels'));
+                    for (var i = 0; i < labels.length; i++) {
+                        $('<span>', { 
+                            text: labels[i].text, 
+                            class: 'label ' + labels[i].class, 
+                            style: 'margin-left: 3px' 
+                        }).insertAfter($(this).find('a').first());
+                    }
+                });
             })
             {foreach $events as $event}
                 {$event->render()|noescape}
