@@ -35,6 +35,15 @@ class SearchPlugin extends BasePlugin
         $this->inputId = $dataTree->getOption('elementId') . '_search_' . time();
     }
 
+    /** Render. */
+    public function render()
+    {
+        $template = $this->template;
+        $template->setFile(__DIR__ . '/templates/search-plugin.latte');
+        $template->shortname = $this->getShortname();
+        $template->options = $this->options->toJson();
+        $template->render();
+    }
 
     /** Render configuration. */
     public function renderConfiguration()

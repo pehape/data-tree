@@ -1,16 +1,14 @@
 
-var searchInput = $('<input>', { class: 'form-control {$inputClass}', style: 'width: 90%; float: left', type: 'text', placeholder: 'Search ...', id: '{$inputId}'});
+var searchInput = $('<input>', { class: 'form-control {$inputClass}', style: 'width: 90%; float: left', type: 'text', placeholder: 'Press enter to search ...', id: '{$inputId}'});
 var checkInput = $('<input>', { type: 'checkbox', style: 'margin-left: 10px; margin-top: 12px', id: '{$inputId}_check', title: 'Show only matches'});
 $('#{$treeId}' + '_datatreeToolbox').append(searchInput);
 $('#{$treeId}' + '_datatreeToolbox').append(checkInput);
 
-var to = false;
-$('#{$inputId}').keyup(function () {
-  if(to) { clearTimeout(to); }
-  to = setTimeout(function () {
-    var v = $('#{$inputId}').val();
-    $('#{$treeId}').jstree(true).search(v);
-  }, 250);
+$('#{$inputId}').keypress(function (e) {
+    if (e.keyCode === 13) {
+        var v = $('#{$inputId}').val();
+        $('#{$treeId}').jstree(true).search(v);
+    }
 });
 
 $('#{$inputId}_check').change(function () {
