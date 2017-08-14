@@ -302,11 +302,15 @@ class DatabaseSource implements IDataSource
     /**
      * Get children count of node.
      * @param int $id
+     * @param string|NULL $type
      * @return int
      */
-    public function getChildrenCountFrom($id)
+    public function getChildrenCountFrom($id, $type = NULL)
     {
-        return ($this->getClosureTable()->where('ancestor', $id)->count() - 1);
+        $selection = $this->getClosureTable()->where('ancestor', $id);
+        return ($type === NULL) ?
+            ($selection->count() - 1) :
+            ($selection->where('descendant.type', $type)->count() - 1);
     }
 
 
@@ -338,7 +342,7 @@ class DatabaseSource implements IDataSource
             ->select($this->baseTableName . '.*, depth')
             ->where(':' . $this->closureTableName . '.descendant', $id)
             ->order('depth ' . $order);
-
+        
         if ($self === FALSE) {
             $selection->where('depth > ?', 0);
         }
