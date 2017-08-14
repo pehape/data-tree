@@ -25,6 +25,7 @@ class RenameNodeEvent extends BaseEvent
         'id' => 'data.node.id',
         'text' => 'data.node.text',
         'type' => 'data.node.type',
+        'parent' => 'data.node.parent',
     ];
 
     public function __construct()
