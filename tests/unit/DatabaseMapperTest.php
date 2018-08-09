@@ -1,21 +1,21 @@
 <?php
 
 /**
- * This file is part of the Pehape libraries (http://pehape.cz)
+ * This file is part of the Rathouz libraries (http://rathouz.cz)
  * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
-namespace Pehape\DataTree\Tests\Unit;
+namespace Rathouz\DataTree\Tests\Unit;
 
 use Codeception\Util\Fixtures;
 use Nette\Database\Context;
 use Nette\DI\Container;
-use Pehape\DataTree\Mappers\DatabaseMapper;
-use Pehape\DataTree\Sources\DatabaseSource;
+use Rathouz\DataTree\Mappers\DatabaseMapper;
+use Rathouz\DataTree\Sources\DatabaseSource;
 
 
 /**
- * Test Pehape\DataTree\Mappers\DatabaseMapper class.
+ * Test Rathouz\DataTree\Mappers\DatabaseMapper class.
  *
  * @author Tomas Rathouz <trathouz at gmail.com>
  */
@@ -48,11 +48,11 @@ class DatabaseMapperTest extends \Codeception\Test\Unit
     }
 
 
-    /** DatabaseSource must implement \Pehape\DataTree\Mappers\IDataMapper. */
+    /** DatabaseSource must implement \Rathouz\DataTree\Mappers\IDataMapper. */
     public function testImplementsInterface()
     {
-        $this->tester->assertInstanceOf('Pehape\DataTree\Mappers\IDataMapper', $this->mapper);
-        $this->tester->assertInstanceOf('Pehape\DataTree\Mappers\IMapper', $this->mapper);
+        $this->tester->assertInstanceOf('Rathouz\DataTree\Mappers\IDataMapper', $this->mapper);
+        $this->tester->assertInstanceOf('Rathouz\DataTree\Mappers\IMapper', $this->mapper);
     }
 
 
@@ -78,7 +78,7 @@ class DatabaseMapperTest extends \Codeception\Test\Unit
     {
         $this->mapper->setMapping(['id' => 'id', 'ancestor' => 'parent', 'text' => 'text']);
         $nodes = $this->source->getNodes();
-        $this->tester->expectException('Pehape\DataTree\Exceptions\UnvalidDataMappingException', function() use ($nodes) {
+        $this->tester->expectException('Rathouz\DataTree\Exceptions\UnvalidDataMappingException', function() use ($nodes) {
             $this->mapper->applyMapping($nodes);
         });
     }

@@ -1,22 +1,22 @@
 <?php
 
 /**
- * This file is part of the Pehape libraries (http://pehape.cz)
+ * This file is part of the Rathouz libraries (http://rathouz.cz)
  * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
-namespace Pehape\DataTree\Components;
+namespace Rathouz\DataTree\Components;
 
 use Nette\Application;
 use Nette\Localization;
 use Nette\Utils;
-use Pehape\DataTree\Events;
-use Pehape\DataTree\Exceptions;
-use Pehape\DataTree\Localization\Untranslation;
-use Pehape\DataTree\Mappers;
-use Pehape\DataTree\Plugins;
-use Pehape\DataTree\Rendering;
-use Pehape\DataTree\Sources;
+use Rathouz\DataTree\Events;
+use Rathouz\DataTree\Exceptions;
+use Rathouz\DataTree\Localization\Untranslation;
+use Rathouz\DataTree\Mappers;
+use Rathouz\DataTree\Plugins;
+use Rathouz\DataTree\Rendering;
+use Rathouz\DataTree\Sources;
 
 
 /**
@@ -58,22 +58,22 @@ class DataTree extends Application\UI\Control
 
     /** @var array List of default plugins */
     private $defaultPlugins = [
-        'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
-        'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
-        'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
-        'search' => '\Pehape\DataTree\Plugins\SearchPlugin',
-        'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
+        'contextmenu' => '\Rathouz\DataTree\Plugins\ContextmenuPlugin',
+        'dnd' => '\Rathouz\DataTree\Plugins\DragAndDropPlugin',
+        'checkbox' => '\Rathouz\DataTree\Plugins\CheckboxPlugin',
+        'search' => '\Rathouz\DataTree\Plugins\SearchPlugin',
+        'types' => '\Rathouz\DataTree\Plugins\TypesPlugin',
     ];
 
     /** @var array List of default events */
     private $defaultEvents = [
-        'load_nodes' => '\Pehape\DataTree\Events\LoadNodesEvent',
-        'select_node' => '\Pehape\DataTree\Events\SelectNodeEvent',
-        'create_node' => '\Pehape\DataTree\Events\CreateNodeEvent',
-        'rename_node' => '\Pehape\DataTree\Events\RenameNodeEvent',
-        'delete_node' => '\Pehape\DataTree\Events\DeleteNodeEvent',
-        'move_node' => '\Pehape\DataTree\Events\MoveNodeEvent',
-        'paste' => '\Pehape\DataTree\Events\PasteNodeEvent',
+        'load_nodes' => '\Rathouz\DataTree\Events\LoadNodesEvent',
+        'select_node' => '\Rathouz\DataTree\Events\SelectNodeEvent',
+        'create_node' => '\Rathouz\DataTree\Events\CreateNodeEvent',
+        'rename_node' => '\Rathouz\DataTree\Events\RenameNodeEvent',
+        'delete_node' => '\Rathouz\DataTree\Events\DeleteNodeEvent',
+        'move_node' => '\Rathouz\DataTree\Events\MoveNodeEvent',
+        'paste' => '\Rathouz\DataTree\Events\PasteNodeEvent',
     ];
 
     /** @var array List of default selected nodes. */

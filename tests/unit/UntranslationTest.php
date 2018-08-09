@@ -1,17 +1,17 @@
 <?php
 
 /**
- * This file is part of the Pehape libraries (http://pehape.cz)
+ * This file is part of the Rathouz libraries (http://rathouz.cz)
  * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
-namespace Pehape\DataTree\Tests\Unit;
+namespace Rathouz\DataTree\Tests\Unit;
 
-use Pehape\DataTree\Localization\Untranslation;
+use Rathouz\DataTree\Localization\Untranslation;
 
 
 /**
- * Test Pehape\DataTree\Localization\Untranslation class.
+ * Test Rathouz\DataTree\Localization\Untranslation class.
  *
  * @author Tomas Rathouz <trathouz at gmail.com>
  */

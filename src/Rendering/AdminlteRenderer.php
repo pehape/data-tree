@@ -1,17 +1,17 @@
 <?php
 
 /**
- * This file is part of the Pehape libraries (http://pehape.cz)
+ * This file is part of the Rathouz libraries (http://rathouz.cz)
  * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
-namespace Pehape\DataTree\Rendering;
+namespace Rathouz\DataTree\Rendering;
 
 use Latte;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Utils;
-use Pehape\DataTree\Components\DataTree;
-use Pehape\DataTree\Events;
+use Rathouz\DataTree\Components\DataTree;
+use Rathouz\DataTree\Events;
 
 
 /**

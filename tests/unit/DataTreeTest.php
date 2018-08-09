@@ -1,19 +1,19 @@
 <?php
 
 /**
- * This file is part of the Pehape libraries (http://pehape.cz)
+ * This file is part of the Rathouz libraries (http://rathouz.cz)
  * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
-namespace Pehape\DataTree\Tests\Unit;
+namespace Rathouz\DataTree\Tests\Unit;
 
 use Codeception\Util\Fixtures;
 use Nette\DI\Container;
-use Pehape\DataTree\Components;
+use Rathouz\DataTree\Components;
 
 
 /**
- * Test Pehape\DataTree\Components\DataTree class.
+ * Test Rathouz\DataTree\Components\DataTree class.
  *
  * @author Tomas Rathouz <trathouz at gmail.com>
  */
@@ -34,7 +34,7 @@ class DataTreeTest extends \Codeception\Test\Unit
     protected function _before()
     {
         $this->container = Fixtures::get('container');
-        $dataTreeFactory = $this->container->getByType('Pehape\DataTree\Components\IDataTree');
+        $dataTreeFactory = $this->container->getByType('Rathouz\DataTree\Components\IDataTree');
         $this->dataTree = $dataTreeFactory->create();
     }
 

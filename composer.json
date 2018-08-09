@@ -1,5 +1,5 @@
 {
-    "name": "pehape/data-tree",
+    "name": "rathouz/data-tree",
     "type": "library",
     "description": "DataTree: Tree data-structure component for Nette Framework",
     "keywords": ["datatree", "tree", "datastructure", "structure", "jstree", "nette"],
@@ -8,12 +8,12 @@
         {
             "name": "Tomas Rathouz",
             "email": "trathouz@gmail.com",
-            "homepage": "http://pehape.cz"
+            "homepage": "http://rathouz.cz"
         }
     ],
     "support": {
         "email": "trathouz@gmail.com",
-        "issues": "https://github.com/pehape/data-tree/issues/"
+        "issues": "https://github.com/rathouz/data-tree/issues/"
     },
     "require": {
         "php": ">=5.4.0",
@@ -21,7 +21,7 @@
         "nette/database": "~2.3",
         "nette/utils": "~2.3",
         "latte/latte": "^2.3",
-        "pehape/tools": "^1.1"
+        "rathouz/tools": "^2.0"
     },
     "require-dev": {
         "arachne/codeception": "^0.7.3",
@@ -31,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Pehape\\DataTree\\": "src"
+            "Rathouz\\DataTree\\": "src"
         },
         "classmap": [
             "src/Exceptions/exceptions.php"
@@ -39,7 +39,7 @@
     },
     "scripts": {
         "test": "vendor\\bin\\codecept run --env local",
-        "syntax": "vendor\\bin\\phpcs --standard=vendor/pehape/tools/assets/coding-standards/standards.xml --colors --encoding=utf-8 -sp src/",
-        "syntax-fix": "vendor\\bin\\phpcbf --standard=vendor/pehape/tools/assets/coding-standards/standards.xml src/"
+        "syntax": "vendor\\bin\\phpcs --standard=vendor/rathouz/tools/assets/coding-standards/standards.xml --colors --encoding=utf-8 -sp src/",
+        "syntax-fix": "vendor\\bin\\phpcbf --standard=vendor/rathouz/tools/assets/coding-standards/standards.xml src/"
     }
 }

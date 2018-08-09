@@ -5,7 +5,7 @@ DataTree is tree data-structure component for Nette Framework.
 =======
 Tree data-structure component for Nette Framework.
 
-![datatree](https://raw.githubusercontent.com/pehape/data-tree/master/assets/static/images/tree-example.png)
+![datatree](https://raw.githubusercontent.com/rathouz/data-tree/master/assets/static/images/tree-example.png)
 
 Prerequisities
 ------------
@@ -40,9 +40,9 @@ Register component as service
 ```yml
 services:
 	# Register data source for the DataTree component
-	dataTreeSource: Pehape\DataTree\Sources\DatabaseSource
+	dataTreeSource: Rathouz\DataTree\Sources\DatabaseSource
 	# Create DataTree component using generated factory 
-	dataTree: Pehape\DataTree\Components\IDataTree
+	dataTree: Rathouz\DataTree\Components\IDataTree
 ``` 
 
 Now you can inject your **dataTree** service to presenters and just use it.
@@ -54,12 +54,12 @@ For example in your TreePresenter.php write:
 
 ```php
 
-/** @var \Pehape\DataTree\Components\IDataTree @inject */
+/** @var \Rathouz\DataTree\Components\IDataTree @inject */
 public $dataTree;
 
 ...
 
-/** @return \Pehape\DataTree\Components\DataTree */
+/** @return \Rathouz\DataTree\Components\DataTree */
 protected function createComponentDataTree()
 {
 	$dataTree = $this->dataTree->create();
@@ -131,13 +131,13 @@ DataTree component has it's own eventing system. The most of events coresponds w
 ```php
 /** @var array List of default events */
 private $defaultEvents = [
-	'load_nodes' => '\Pehape\DataTree\Events\LoadNodesEvent',
-	'select_node' => '\Pehape\DataTree\Events\SelectNodeEvent',
-	'create_node' => '\Pehape\DataTree\Events\CreateNodeEvent',
-	'rename_node' => '\Pehape\DataTree\Events\RenameNodeEvent',
-	'delete_node' => '\Pehape\DataTree\Events\DeleteNodeEvent',
-	'move_node' => '\Pehape\DataTree\Events\MoveNodeEvent',
-	'paste' => '\Pehape\DataTree\Events\PasteNodeEvent',
+	'load_nodes' => '\Rathouz\DataTree\Events\LoadNodesEvent',
+	'select_node' => '\Rathouz\DataTree\Events\SelectNodeEvent',
+	'create_node' => '\Rathouz\DataTree\Events\CreateNodeEvent',
+	'rename_node' => '\Rathouz\DataTree\Events\RenameNodeEvent',
+	'delete_node' => '\Rathouz\DataTree\Events\DeleteNodeEvent',
+	'move_node' => '\Rathouz\DataTree\Events\MoveNodeEvent',
+	'paste' => '\Rathouz\DataTree\Events\PasteNodeEvent',
 ];
 ```
 
@@ -148,7 +148,7 @@ $dataTree->getEvent('select_node')->setCallback([$this, 'selectNodeCallback']);
 
 ...
 
-public function selectNodeCallback(\Pehape\DataTree\Components\DataTree $dataTree, \Nette\Utils\ArrayHash $parameters)
+public function selectNodeCallback(\Rathouz\DataTree\Components\DataTree $dataTree, \Nette\Utils\ArrayHash $parameters)
 {
 	...
 	$dataTree->sendSuccessResponse($data);
@@ -157,7 +157,7 @@ public function selectNodeCallback(\Pehape\DataTree\Components\DataTree $dataTre
 
 As you can see, each callback accepts 2 parameters:
 
-* \Pehape\DataTree\Components\DataTree $dataTree
+* \Rathouz\DataTree\Components\DataTree $dataTree
 * \Nette\Utils\ArrayHash $parameters
 
 
@@ -168,11 +168,11 @@ DataTree component has it's own plugin system. The most of plugins coresponds wi
 ```php
 /** @var array List of default plugins */
 private $defaultPlugins = [
-	'contextmenu' => '\Pehape\DataTree\Plugins\ContextmenuPlugin',
-	'dnd' => '\Pehape\DataTree\Plugins\DragAndDropPlugin',
-	'checkbox' => '\Pehape\DataTree\Plugins\CheckboxPlugin',
-	'search' => '\Pehape\DataTree\Plugins\SearchPlugin',
-	'types' => '\Pehape\DataTree\Plugins\TypesPlugin',
+	'contextmenu' => '\Rathouz\DataTree\Plugins\ContextmenuPlugin',
+	'dnd' => '\Rathouz\DataTree\Plugins\DragAndDropPlugin',
+	'checkbox' => '\Rathouz\DataTree\Plugins\CheckboxPlugin',
+	'search' => '\Rathouz\DataTree\Plugins\SearchPlugin',
+	'types' => '\Rathouz\DataTree\Plugins\TypesPlugin',
 ];
 ```
 
@@ -182,4 +182,4 @@ By default, no plugin is enabled. You can enable plugin by:
 $dataTree->addPlugin('contextmenu');
 ```
 
-Each plugin has common configuration, which can be used to post-configuration of jsTree JavaScript object. Configuration property is type of [\Pehape\Tools\Objects\JObject](https://github.com/pehape/tools/blob/master/docs/en/index.md#3-javascript-object-jobject).
+Each plugin has common configuration, which can be used to post-configuration of jsTree JavaScript object. Configuration property is type of [\Rathouz\Tools\Objects\JObject](https://github.com/rathouz/tools/blob/master/docs/en/index.md#3-javascript-object-jobject).

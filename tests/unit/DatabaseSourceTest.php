@@ -1,21 +1,21 @@
 <?php
 
 /**
- * This file is part of the Pehape libraries (http://pehape.cz)
+ * This file is part of the Rathouz libraries (http://rathouz.cz)
  * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
-namespace Pehape\DataTree\Tests\Unit;
+namespace Rathouz\DataTree\Tests\Unit;
 
 use Codeception\Util\Fixtures;
 use Nette\Database\Context;
 use Nette\DI\Container;
-use Pehape\DataTree\Exceptions;
-use Pehape\DataTree\Sources\DatabaseSource;
+use Rathouz\DataTree\Exceptions;
+use Rathouz\DataTree\Sources\DatabaseSource;
 
 
 /**
- * Test Pehape\DataTree\Sources\DatabaseSource class.
+ * Test Rathouz\DataTree\Sources\DatabaseSource class.
  *
  * @author Tomas Rathouz <trathouz at gmail.com>
  */
@@ -44,10 +44,10 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
     }
 
 
-    /** DatabaseSource must implement \Pehape\DataTree\Sources\IDataSource. */
+    /** DatabaseSource must implement \Rathouz\DataTree\Sources\IDataSource. */
     public function testImplementsInterface()
     {
-        $this->tester->assertInstanceOf('Pehape\DataTree\Sources\IDataSource', $this->source);
+        $this->tester->assertInstanceOf('Rathouz\DataTree\Sources\IDataSource', $this->source);
     }
 
 
@@ -82,10 +82,10 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
     /** Test that exception is thrown when setting unknow table. */
     public function testSetUnknownTable()
     {
-        $this->tester->expectException('Pehape\DataTree\Exceptions\UnknownSourceTableException', function() {
+        $this->tester->expectException('Rathouz\DataTree\Exceptions\UnknownSourceTableException', function() {
             $this->source->setBaseTableName('unknown');
         });
-        $this->tester->expectException('Pehape\DataTree\Exceptions\UnknownSourceTableException', function() {
+        $this->tester->expectException('Rathouz\DataTree\Exceptions\UnknownSourceTableException', function() {
             $this->source->setBaseTableName('unknown_closure');
         });
     }
@@ -111,7 +111,7 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
     /** Test get unknown node. */
     public function testGetUnknownNode()
     {
-        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() {
+        $this->tester->expectException('Rathouz\DataTree\Exceptions\DataSourceException', function() {
             $this->source->getNode(-1);
         });
     }
@@ -140,7 +140,7 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
             'type' => 'group',
             'unvalid_column' => 'unvalid_column',
         ];
-        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() use ($insertNode) {
+        $this->tester->expectException('Rathouz\DataTree\Exceptions\DataSourceException', function() use ($insertNode) {
             $this->source->createNode(0, $insertNode);
         });
     }
@@ -165,7 +165,7 @@ class DatabaseSourceTest extends \Codeception\Test\Unit
         $updateNode = [
             'unvalid_column' => 'unvalid_data',
         ];
-        $this->tester->expectException('Pehape\DataTree\Exceptions\DataSourceException', function() use ($updateNode) {
+        $this->tester->expectException('Rathouz\DataTree\Exceptions\DataSourceException', function() use ($updateNode) {
             $this->source->updateNode(1, $updateNode);
         });
     }

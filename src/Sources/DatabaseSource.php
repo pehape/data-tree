@@ -1,15 +1,15 @@
 <?php
 
 /**
- * This file is part of the Pehape libraries (http://pehape.cz)
+ * This file is part of the Rathouz libraries (http://rathouz.cz)
  * Copyright (c) 2016 Tomas Rathouz <trathouz at gmail.com>
  */
 
-namespace Pehape\DataTree\Sources;
+namespace Rathouz\DataTree\Sources;
 
 use Nette\Database\Context;
 use Nette\Database\Table;
-use Pehape\DataTree\Exceptions;
+use Rathouz\DataTree\Exceptions;
 
 
 /**
